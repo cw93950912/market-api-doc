@@ -1,0 +1,1510 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "description": "Official API documentation for Surf - Your gateway to Web3 exploration and discovery.",
+        "title": "Surf API Documentation",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "Surf Team",
+            "email": "backend@cybertinolab.com"
+        },
+        "license": {
+            "name": "GPL-3.0-or-later",
+            "url": "https://spdx.org/licenses/GPL-3.0-or-later.html"
+        },
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/healthz": {
+            "get": {
+                "description": "Service liveness check",
+                "tags": [
+                    "health"
+                ],
+                "summary": "Health check",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/start.HealthzResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/admin/keys": {
+            "post": {
+                "security": [
+                    {
+                        "AccessToken": []
+                    }
+                ],
+                "description": "给已有租户创建一个新的 API Key 并建立关联关系",
+                "tags": [
+                    "admin"
+                ],
+                "summary": "为租户创建并关联 API Key",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/model.CreateAPIKeyRequest"
+                            }
+                        }
+                    },
+                    "description": "创建 Key 请求",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.GenericResponse-model_CreateAPIKeyResponseData"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/admin/tenants": {
+            "post": {
+                "security": [
+                    {
+                        "AccessToken": []
+                    }
+                ],
+                "description": "创建一个租户（可选：同时创建并返回一个 API Key）",
+                "tags": [
+                    "admin"
+                ],
+                "summary": "创建租户",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/model.CreateTenantRequest"
+                            }
+                        }
+                    },
+                    "description": "创建租户请求",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.GenericResponse-model_CreateTenantResponseData"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/chat/completions": {
+            "post": {
+                "security": [
+                    {
+                        "AccessToken": []
+                    }
+                ],
+                "description": "OpenAI-compatible Chat Completions. Use Bearer authorization. When stream=true, responds as Server-Sent Events (SSE); otherwise returns JSON.",
+                "tags": [
+                    "completions"
+                ],
+                "summary": "Chat Completions",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/model.CompletionsRequest"
+                            }
+                        }
+                    },
+                    "description": "Request body (OpenAI-compatible)",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "SSE Stream\" example(\"data: {\\\"id\\\":\\\"chatcmpl-abc123\\\",\\\"object\\\":\\\"chat.completion.chunk\\\",\\\"created\\\":1699890366,\\\"model\\\":\\\"gpt-4o-mini\\\",\\\"choices\\\":[{\\\"index\\\":0,\\\"delta\\\":{\\\"role\\\":\\\"assistant\\\",\\\"content\\\":\\\"Hello\\\"},\\\"finish_reason\\\":null}]}\\n\\ndata: {\\\"id\\\":\\\"chatcmpl-abc123\\\",\\\"object\\\":\\\"chat.completion.chunk\\\",\\\"created\\\":1699890366,\\\"model\\\":\\\"gpt-4o-mini\\\",\\\"choices\\\":[{\\\"index\\\":0,\\\"delta\\\":{\\\"content\\\":\\\" world\\\"},\\\"finish_reason\\\":null}]}\\n\\ndata: [DONE]\\n\\n\")",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "text/event-stream": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            },
+                            "text/event-stream": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            },
+                            "text/event-stream": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    },
+                    "502": {
+                        "description": "Bad Gateway",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            },
+                            "text/event-stream": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/internal/chat/completions": {
+            "post": {
+                "security": [
+                    {
+                        "AccessToken": []
+                    }
+                ],
+                "description": "OpenAI-compatible Chat Completions. Use Bearer authorization. When stream=true, responds as Server-Sent Events (SSE); otherwise returns JSON.",
+                "tags": [
+                    "completions"
+                ],
+                "summary": "Chat Completions",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/model.InternalCompletionsRequest"
+                            }
+                        }
+                    },
+                    "description": "Request body (OpenAI-compatible)",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "SSE Stream\" example(\"data: {\\\"id\\\":\\\"chatcmpl-abc123\\\",\\\"object\\\":\\\"chat.completion.chunk\\\",\\\"created\\\":1699890366,\\\"model\\\":\\\"gpt-4o-mini\\\",\\\"choices\\\":[{\\\"index\\\":0,\\\"delta\\\":{\\\"role\\\":\\\"assistant\\\",\\\"content\\\":\\\"Hello\\\"},\\\"finish_reason\\\":null}]}\\n\\ndata: {\\\"id\\\":\\\"chatcmpl-abc123\\\",\\\"object\\\":\\\"chat.completion.chunk\\\",\\\"created\\\":1699890366,\\\"model\\\":\\\"gpt-4o-mini\\\",\\\"choices\\\":[{\\\"index\\\":0,\\\"delta\\\":{\\\"content\\\":\\\" world\\\"},\\\"finish_reason\\\":null}]}\\n\\ndata: [DONE]\\n\\n\")",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "text/event-stream": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            },
+                            "text/event-stream": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            },
+                            "text/event-stream": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    },
+                    "502": {
+                        "description": "Bad Gateway",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            },
+                            "text/event-stream": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/market/ai-recommended-prompts": {
+            "get": {
+                "security": [
+                    {
+                        "AccessToken": []
+                    }
+                ],
+                "description": "Returns AI recommended prompts content for a given date and type.",
+                "tags": [
+                    "Market"
+                ],
+                "summary": "AI Recommended Prompts",
+                "parameters": [
+                    {
+                        "description": "Date in YYYY-MM-DD format. If date is not provided, returns the most recent data",
+                        "name": "date",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Prompt type (template key)",
+                        "name": "type",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "krw_market_sentiment",
+                                "strongest_momentum",
+                                "trending_issues",
+                                "go_up",
+                                "go_down"
+                            ]
+                        }
+                    },
+                    {
+                        "description": "Ticker (optional)",
+                        "name": "ticker",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns AI recommended prompts on success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.GenericResponse-model_QuestionResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "When request parameters are invalid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "When message not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/market/ai-report": {
+            "get": {
+                "security": [
+                    {
+                        "AccessToken": []
+                    }
+                ],
+                "description": "Returns AI-generated report content for a given date and report type.",
+                "tags": [
+                    "Market"
+                ],
+                "summary": "AI Report",
+                "parameters": [
+                    {
+                        "description": "Date in YYYY-MM-DD format. If date is not provided, returns the most recent data",
+                        "name": "date",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Report type (template key)",
+                        "name": "type",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "realtime_info",
+                                "summary",
+                                "technical_analysis",
+                                "onchain_analysis",
+                                "social_data",
+                                "conclusion"
+                            ]
+                        }
+                    },
+                    {
+                        "description": "Ticker (required)",
+                        "name": "ticker",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns AI report on success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.GenericResponse-model_QuestionResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "When request parameters are invalid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "When message not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/market/events": {
+            "get": {
+                "security": [
+                    {
+                        "AccessToken": []
+                    }
+                ],
+                "description": "Provides a forward-looking summary of significant scheduled economic or financial events expected to occur during the evening (based on Korean Standard Time) of a selected date.",
+                "tags": [
+                    "Market"
+                ],
+                "summary": "Major Events Tonight",
+                "parameters": [
+                    {
+                        "description": "Date in YYYY-MM-DD format. If date is not provided, returns the most recent data",
+                        "name": "date",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns major events on success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.GenericResponse-model_QuestionResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "When date format is invalid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "When message not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/market/news": {
+            "get": {
+                "security": [
+                    {
+                        "AccessToken": []
+                    }
+                ],
+                "description": "Returns a curated overview of the most important and widely discussed news relevant to the crypto market for a specified date.",
+                "tags": [
+                    "Market"
+                ],
+                "summary": "Must-Know News Today",
+                "parameters": [
+                    {
+                        "description": "Date in YYYY-MM-DD format. If date is not provided, returns the most recent data",
+                        "name": "date",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns news on success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.GenericResponse-model_QuestionResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "When date format is invalid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "When message not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/market/report": {
+            "get": {
+                "security": [
+                    {
+                        "AccessToken": []
+                    }
+                ],
+                "description": "Returns market report content for a given date and report type.",
+                "tags": [
+                    "Market"
+                ],
+                "summary": "Market Report",
+                "parameters": [
+                    {
+                        "description": "Date in YYYY-MM-DD format. If date is not provided, returns the most recent data",
+                        "name": "date",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Report type (template key)",
+                        "name": "type",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "market_sentiment",
+                                "market_trends",
+                                "trending_sectors",
+                                "must_know_news",
+                                "major_events_tonight",
+                                "top_gainers",
+                                "market_alerts"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns market report on success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.GenericResponse-model_QuestionResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "When request parameters are invalid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "When message not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/market/sentiment": {
+            "get": {
+                "security": [
+                    {
+                        "AccessToken": []
+                    }
+                ],
+                "description": "analyse the market sentiment of a selected date for tokens listed on Bithumb, including:\n1.The Fear & Greed Index for the crypto market.\n2.The number of tokens that have risen or fallen by more than 3%.\n3.The number of tokens whose change is within ±3% (i.e., neutral).",
+                "tags": [
+                    "Market"
+                ],
+                "summary": "Today's Market Sentiment",
+                "parameters": [
+                    {
+                        "description": "Date in YYYY-MM-DD format. If date is not provided, returns the most recent data",
+                        "name": "date",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns todays market sentiment on success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.GenericResponse-model_SentimentResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "When date format is invalid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "When market sentiment not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/market/trends": {
+            "get": {
+                "security": [
+                    {
+                        "AccessToken": []
+                    }
+                ],
+                "description": "Delivers a high-level summary of the key crypto market trends and developments observed on a given date.",
+                "tags": [
+                    "Market"
+                ],
+                "summary": "Major Trends",
+                "parameters": [
+                    {
+                        "description": "Date in YYYY-MM-DD format. If date is not provided, returns the most recent data",
+                        "name": "date",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns major trends on success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.GenericResponse-model_QuestionResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "When date format is invalid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "When message not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/token/ask/{ticker}": {
+            "get": {
+                "security": [
+                    {
+                        "AccessToken": []
+                    }
+                ],
+                "description": "Returns a quick recent price movement analysis of a selected token.\nToken ticker (path parameter) is required.",
+                "tags": [
+                    "Token"
+                ],
+                "summary": "Quick-Select",
+                "parameters": [
+                    {
+                        "description": "Ticker symbol",
+                        "name": "ticker",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns quick ask response on success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.GenericResponse-model_AskResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "When ticker or template_id is missing",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/token/research/{ticker}": {
+            "get": {
+                "security": [
+                    {
+                        "AccessToken": []
+                    }
+                ],
+                "description": "Returns a detailed analysis on the possible factors that can influence the price of a given token in the future.\nToken ticker (path parameter) is required.",
+                "tags": [
+                    "Token"
+                ],
+                "summary": "Token Research",
+                "parameters": [
+                    {
+                        "description": "Ticker symbol",
+                        "name": "ticker",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns research information on success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.GenericResponse-model_ResearchResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "When ticker or template_id is missing",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/token/score/{ticker}": {
+            "get": {
+                "security": [
+                    {
+                        "AccessToken": []
+                    }
+                ],
+                "description": "Returns various sentiment scores for a given ticker including weighted score, smart follower count score, mind share score, and cyber score.\nToken ticker (path parameter) is required",
+                "tags": [
+                    "Token"
+                ],
+                "summary": "Token Scoring",
+                "parameters": [
+                    {
+                        "description": "Ticker symbol",
+                        "name": "ticker",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns chat score information on success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.GenericResponse-model_GetChatScoreResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "When ticker or template_id is missing",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "servers": [
+        {
+            "url": "/surf-ai"
+        }
+    ],
+    "components": {
+        "securitySchemes": {
+            "AccessToken": {
+                "type": "apiKey",
+                "name": "Authorization",
+                "in": "header"
+            }
+        },
+        "schemas": {
+            "model.AskResponse": {
+                "type": "object",
+                "properties": {
+                    "content": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    }
+                }
+            },
+            "model.BaseResponse": {
+                "type": "object",
+                "properties": {
+                    "error_code": {
+                        "type": "string",
+                        "example": "FORBIDDEN"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "success"
+                    },
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    }
+                }
+            },
+            "model.CompletionsChoice": {
+                "type": "object",
+                "properties": {
+                    "finish_reason": {
+                        "description": "Indicates why the model stopped generating. Common values:\n- stop — normal completion\n- length — hit max token limit\n- tool_calls — model invoked a tool\n- content_filter — blocked by safety filters\n- error — unexpected interruption",
+                        "type": "string",
+                        "example": "stop"
+                    },
+                    "index": {
+                        "description": "The index of the choice",
+                        "type": "integer",
+                        "example": 0
+                    },
+                    "message": {
+                        "$ref": "#/components/schemas/model.CompletionsMessage"
+                    }
+                }
+            },
+            "model.CompletionsMessage": {
+                "type": "object",
+                "properties": {
+                    "content": {
+                        "type": "string",
+                        "example": "Here is a summary of today's Bitcoin market..."
+                    },
+                    "reasoning": {
+                        "description": "A field to showcase model's thinking process.",
+                        "type": "string",
+                        "example": "Internal chain-of-thought or brief rationale"
+                    },
+                    "role": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/model.Role"
+                            }
+                        ],
+                        "example": "assistant"
+                    }
+                }
+            },
+            "model.CompletionsProxyResponse": {
+                "type": "object",
+                "properties": {
+                    "choices": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/model.CompletionsChoice"
+                        }
+                    },
+                    "created": {
+                        "description": "Timestamp indicating when the message was generated.",
+                        "type": "integer",
+                        "example": 1764312947
+                    },
+                    "id": {
+                        "description": "A unique identifier for the generated message. Used for internal tracking.",
+                        "type": "string",
+                        "example": "chatcmpl-1764312947577"
+                    },
+                    "model": {
+                        "type": "string",
+                        "example": "surf-ask"
+                    },
+                    "object": {
+                        "type": "string",
+                        "example": "chat.completion"
+                    },
+                    "usage": {
+                        "$ref": "#/components/schemas/model.CompletionsUsage"
+                    }
+                }
+            },
+            "model.CompletionsRequest": {
+                "type": "object",
+                "properties": {
+                    "messages": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/model.Message"
+                        }
+                    },
+                    "model": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/model.LLMModel"
+                            }
+                        ],
+                        "example": "surf-ask"
+                    },
+                    "stream": {
+                        "type": "boolean",
+                        "example": false
+                    }
+                }
+            },
+            "model.CompletionsUsage": {
+                "type": "object",
+                "properties": {
+                    "completion_tokens": {
+                        "type": "integer",
+                        "example": 113
+                    },
+                    "prompt_tokens": {
+                        "type": "integer",
+                        "example": 13026
+                    },
+                    "total_tokens": {
+                        "type": "integer",
+                        "example": 13760
+                    }
+                }
+            },
+            "model.CreateAPIKeyRequest": {
+                "type": "object",
+                "properties": {
+                    "tenant_id": {
+                        "type": "string"
+                    }
+                }
+            },
+            "model.CreateAPIKeyResponseData": {
+                "type": "object",
+                "properties": {
+                    "api_key_id": {
+                        "type": "string"
+                    },
+                    "plain_key": {
+                        "type": "string"
+                    }
+                }
+            },
+            "model.CreateTenantRequest": {
+                "type": "object",
+                "properties": {
+                    "create_api_key": {
+                        "type": "boolean"
+                    },
+                    "limit": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "period": {
+                        "type": "integer"
+                    },
+                    "type": {
+                        "description": "默认建议使用 API",
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/model.TenantType"
+                            }
+                        ]
+                    }
+                }
+            },
+            "model.CreateTenantResponseData": {
+                "type": "object",
+                "properties": {
+                    "api_key": {
+                        "type": "string"
+                    },
+                    "limit": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "period": {
+                        "type": "integer"
+                    },
+                    "tenant_id": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/model.TenantType"
+                    }
+                }
+            },
+            "model.GenericResponse-model_AskResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "$ref": "#/components/schemas/model.AskResponse"
+                    },
+                    "error_code": {
+                        "type": "string",
+                        "example": "FORBIDDEN"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "success"
+                    },
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    }
+                }
+            },
+            "model.GenericResponse-model_CreateAPIKeyResponseData": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "$ref": "#/components/schemas/model.CreateAPIKeyResponseData"
+                    },
+                    "error_code": {
+                        "type": "string",
+                        "example": "FORBIDDEN"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "success"
+                    },
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    }
+                }
+            },
+            "model.GenericResponse-model_CreateTenantResponseData": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "$ref": "#/components/schemas/model.CreateTenantResponseData"
+                    },
+                    "error_code": {
+                        "type": "string",
+                        "example": "FORBIDDEN"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "success"
+                    },
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    }
+                }
+            },
+            "model.GenericResponse-model_GetChatScoreResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "$ref": "#/components/schemas/model.GetChatScoreResponse"
+                    },
+                    "error_code": {
+                        "type": "string",
+                        "example": "FORBIDDEN"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "success"
+                    },
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    }
+                }
+            },
+            "model.GenericResponse-model_QuestionResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "$ref": "#/components/schemas/model.QuestionResponse"
+                    },
+                    "error_code": {
+                        "type": "string",
+                        "example": "FORBIDDEN"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "success"
+                    },
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    }
+                }
+            },
+            "model.GenericResponse-model_ResearchResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "$ref": "#/components/schemas/model.ResearchResponse"
+                    },
+                    "error_code": {
+                        "type": "string",
+                        "example": "FORBIDDEN"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "success"
+                    },
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    }
+                }
+            },
+            "model.GenericResponse-model_SentimentResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "$ref": "#/components/schemas/model.SentimentResponse"
+                    },
+                    "error_code": {
+                        "type": "string",
+                        "example": "FORBIDDEN"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "success"
+                    },
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    }
+                }
+            },
+            "model.GetChatScoreResponse": {
+                "type": "object",
+                "properties": {
+                    "cyber_score_score": {
+                        "type": "number"
+                    },
+                    "mind_share_score": {
+                        "type": "number"
+                    },
+                    "smart_followers_count_score": {
+                        "type": "number"
+                    },
+                    "weighted_score": {
+                        "type": "number"
+                    }
+                }
+            },
+            "model.InternalCompletionsRequest": {
+                "type": "object",
+                "properties": {
+                    "messages": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/model.Message"
+                        }
+                    },
+                    "model": {
+                        "type": "string",
+                        "example": "surf-ask"
+                    },
+                    "stream": {
+                        "type": "boolean",
+                        "example": false
+                    }
+                }
+            },
+            "model.LLMModel": {
+                "type": "string",
+                "enum": [
+                    "surf-ask",
+                    "surf-research"
+                ],
+                "x-enum-varnames": [
+                    "LLMModelSURFASK",
+                    "LLMModelSURFRESEARCH"
+                ]
+            },
+            "model.Message": {
+                "type": "object",
+                "properties": {
+                    "content": {
+                        "description": "The final user-visible text generated by the assistant.",
+                        "type": "string",
+                        "example": "Summarize today's Bitcoin market."
+                    },
+                    "role": {
+                        "description": "The role of the message. The source of the message. Include:\n- system — system instructions\n- user — user input\n- assistant — model output\n- tool — tool responses",
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/model.Role"
+                            }
+                        ],
+                        "example": "user"
+                    }
+                }
+            },
+            "model.QuestionResponse": {
+                "type": "object",
+                "properties": {
+                    "content": {
+                        "type": "string"
+                    }
+                }
+            },
+            "model.ResearchResponse": {
+                "type": "object",
+                "properties": {
+                    "content": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    }
+                }
+            },
+            "model.Role": {
+                "type": "string",
+                "enum": [
+                    "user",
+                    "assistant",
+                    "system"
+                ],
+                "x-enum-varnames": [
+                    "RoleUSER",
+                    "RoleASSISTANT",
+                    "RoleSYSTEM"
+                ]
+            },
+            "model.SentimentResponse": {
+                "type": "object",
+                "properties": {
+                    "content": {
+                        "type": "string"
+                    },
+                    "fall_token_count": {
+                        "type": "integer"
+                    },
+                    "fear_greed_index": {
+                        "type": "number"
+                    },
+                    "neutral_token_count": {
+                        "type": "number"
+                    },
+                    "rise_token_count": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "model.TenantType": {
+                "type": "string",
+                "enum": [
+                    "API",
+                    "ADMIN"
+                ],
+                "x-enum-varnames": [
+                    "TenantTypeAPI",
+                    "TenantTypeADMIN"
+                ]
+            },
+            "start.HealthzResponse": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "ok"
+                    }
+                }
+            }
+        }
+    }
+}

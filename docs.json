@@ -1,0 +1,42 @@
+{
+    "theme": "mint",
+    "name": "Surf AI API Documentation",
+
+    "favicon": "/favicon.png",
+    "colors": { 
+        "primary": "#000000",
+        "light": "#4D9CFF",
+        "dark": "#0050B4"
+    },
+    "navigation": {
+        "groups": [
+            {
+                "group": "Getting Started",
+                "pages": [
+                    "overview"
+                ]
+            },
+            {
+                "group": "API reference",
+                "openapi": "openapi.json",
+                "pages": [
+                    "GET /v1/market/report",
+                    "GET /v1/market/ai-report",
+                    "GET /v1/market/ai-recommended-prompts"
+                    
+                ],
+                "api": {
+                    "playground": {
+                        "display": "interactive",
+                        "validation": {
+                            "enabled": true
+                        }
+                    },
+                    "examples": {
+                        "languages": ["curl", "python", "javascript"]
+                    }
+                }
+            }
+        ]
+    }
+}
