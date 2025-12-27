@@ -334,46 +334,31 @@
                 }
             }
         },
-        "/v1/market/ai-recommended-prompts": {
+        "/v1/market/ai-recommended-assets": {
             "get": {
                 "security": [
                     {
                         "AccessToken": []
                     }
                 ],
-                "description": "Returns AI recommended prompts content for a given date and type.",
+                "description": "Returns AI recommended assets data. It only filters by input assets and echoes timestamp.",
                 "tags": [
                     "Market"
                 ],
-                "summary": "AI Recommended Prompts",
+                "summary": "AI Recommended Assets (Mock)",
                 "parameters": [
                     {
-                        "description": "Date in YYYY-MM-DD format. If date is not provided, returns the most recent data",
-                        "name": "date",
+                        "description": "Tickers (required). ticker divided by ','. e.g. BTC,ETH,SOL",
+                        "name": "tickers",
                         "in": "query",
+                        "required": true,
                         "schema": {
                             "type": "string"
                         }
                     },
                     {
-                        "description": "Prompt type (template key)",
-                        "name": "type",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "krw_market_sentiment",
-                                "strongest_momentum",
-                                "trending_issues",
-                                "go_up",
-                                "go_down"
-                            ]
-                        }
-                    },
-                    {
-                        "description": "Ticker (optional)",
-                        "name": "ticker",
+                        "description": "Timestamp in YYYY-MM-DD HH:MM:SS format. If timestamp is not provided, returns the most recent data",
+                        "name": "timestamp",
                         "in": "query",
                         "schema": {
                             "type": "string"
@@ -382,11 +367,47 @@
                 ],
                 "responses": {
                     "200": {
+                        "description": "Returns AI recommended assets on success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.GenericResponse-model_AIRecommendedAssetsResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "When request parameters are invalid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/market/ai-recommended-prompts": {
+            "get": {
+                "security": [
+                    {
+                        "AccessToken": []
+                    }
+                ],
+                "description": "Returns a list of AI recommended prompts for multiple categories.",
+                "tags": [
+                    "Market"
+                ],
+                "summary": "AI Recommended Prompts",
+                "responses": {
+                    "200": {
                         "description": "Returns AI recommended prompts on success",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/model.GenericResponse-model_QuestionResponse"
+                                    "$ref": "#/components/schemas/model.GenericResponse-model_AIRecommendedPromptsResponse"
                                 }
                             }
                         }
@@ -1020,6 +1041,236 @@
             }
         },
         "schemas": {
+            "model.AIRecommendedAssetAIEvaluation": {
+                "type": "object",
+                "properties": {
+                    "opinion": {
+                        "type": "string",
+                        "example": "Strong Positive"
+                    },
+                    "summary": {
+                        "type": "string",
+                        "example": "Bitcoin shows strong upward momentum supported by explosive trading volume and consistently positive market sentiment, while maintaining relatively stable price behavior."
+                    }
+                }
+            },
+            "model.AIRecommendedAssetEntry": {
+                "type": "object",
+                "properties": {
+                    "ai_evaluation": {
+                        "$ref": "#/components/schemas/model.AIRecommendedAssetAIEvaluation"
+                    },
+                    "asset": {
+                        "$ref": "#/components/schemas/model.AIRecommendedAssetInfo"
+                    },
+                    "id": {
+                        "type": "string",
+                        "example": "AI-KRW-BTC-20251212-1300"
+                    },
+                    "price": {
+                        "$ref": "#/components/schemas/model.AIRecommendedAssetPrice"
+                    },
+                    "ranking": {
+                        "$ref": "#/components/schemas/model.AIRecommendedAssetRanking"
+                    },
+                    "score": {
+                        "$ref": "#/components/schemas/model.AIRecommendedAssetScore"
+                    },
+                    "score_by_category": {
+                        "$ref": "#/components/schemas/model.AIRecommendedAssetScoreByCategory"
+                    },
+                    "score_interpretation": {
+                        "$ref": "#/components/schemas/model.AIRecommendedAssetScoreInterpretation"
+                    },
+                    "sns_sentiment": {
+                        "$ref": "#/components/schemas/model.AIRecommendedAssetSNSSentiment"
+                    }
+                }
+            },
+            "model.AIRecommendedAssetInfo": {
+                "type": "object",
+                "properties": {
+                    "image_url": {
+                        "type": "string",
+                        "example": "https://static.bithumb.com/assets/btc.png"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Bitcoin"
+                    },
+                    "symbol": {
+                        "type": "string",
+                        "example": "BTC"
+                    }
+                }
+            },
+            "model.AIRecommendedAssetPrice": {
+                "type": "object",
+                "properties": {
+                    "change_rate": {
+                        "type": "number",
+                        "example": 0.1
+                    },
+                    "current": {
+                        "type": "integer",
+                        "example": 1570000
+                    }
+                }
+            },
+            "model.AIRecommendedAssetRanking": {
+                "type": "object",
+                "properties": {
+                    "by_category": {
+                        "$ref": "#/components/schemas/model.AIRecommendedAssetRankingByCategory"
+                    },
+                    "overall_rank": {
+                        "type": "integer",
+                        "example": 1
+                    }
+                }
+            },
+            "model.AIRecommendedAssetRankingByCategory": {
+                "type": "object",
+                "properties": {
+                    "market_sentiment": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "price_stability": {
+                        "type": "integer",
+                        "example": 3
+                    },
+                    "search_trend": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "trading_activity": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "upside_energy": {
+                        "type": "integer",
+                        "example": 1
+                    }
+                }
+            },
+            "model.AIRecommendedAssetSNSSentiment": {
+                "type": "object",
+                "properties": {
+                    "bearish": {
+                        "type": "integer",
+                        "example": 17
+                    },
+                    "bullish": {
+                        "type": "integer",
+                        "example": 62
+                    },
+                    "neutral": {
+                        "type": "integer",
+                        "example": 21
+                    }
+                }
+            },
+            "model.AIRecommendedAssetScore": {
+                "type": "object",
+                "properties": {
+                    "total": {
+                        "type": "number",
+                        "example": 8.6
+                    }
+                }
+            },
+            "model.AIRecommendedAssetScoreByCategory": {
+                "type": "object",
+                "properties": {
+                    "market_sentiment": {
+                        "type": "number",
+                        "example": 8.3
+                    },
+                    "price_stability": {
+                        "type": "number",
+                        "example": 7.1
+                    },
+                    "search_trend": {
+                        "type": "number",
+                        "example": 7.8
+                    },
+                    "trading_activity": {
+                        "type": "number",
+                        "example": 9.2
+                    },
+                    "upside_energy": {
+                        "type": "number",
+                        "example": 8.9
+                    }
+                }
+            },
+            "model.AIRecommendedAssetScoreInterpretation": {
+                "type": "object",
+                "properties": {
+                    "market_sentiment": {
+                        "type": "string",
+                        "example": "Very Positive Signal"
+                    },
+                    "price_stability": {
+                        "type": "string",
+                        "example": "Stable Flow"
+                    },
+                    "search_trend": {
+                        "type": "string",
+                        "example": "Increasing Interest"
+                    },
+                    "trading_activity": {
+                        "type": "string",
+                        "example": "Volume Explosion"
+                    },
+                    "upside_energy": {
+                        "type": "string",
+                        "example": "Strong Uptrend"
+                    }
+                }
+            },
+            "model.AIRecommendedAssetsResponse": {
+                "type": "object",
+                "properties": {
+                    "assets": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/model.AIRecommendedAssetEntry"
+                        }
+                    },
+                    "generated_at": {
+                        "type": "string",
+                        "example": "2025-12-12T13:00:00+09:00"
+                    },
+                    "ranking_method": {
+                        "type": "string",
+                        "example": "total_score_desc"
+                    }
+                }
+            },
+            "model.AIRecommendedPrompt": {
+                "type": "object",
+                "properties": {
+                    "content": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    }
+                }
+            },
+            "model.AIRecommendedPromptsResponse": {
+                "type": "object",
+                "properties": {
+                    "prompts": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/model.AIRecommendedPrompt"
+                        }
+                    }
+                }
+            },
             "model.AskResponse": {
                 "type": "object",
                 "properties": {
@@ -1224,6 +1475,46 @@
                     },
                     "type": {
                         "$ref": "#/components/schemas/model.TenantType"
+                    }
+                }
+            },
+            "model.GenericResponse-model_AIRecommendedAssetsResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "$ref": "#/components/schemas/model.AIRecommendedAssetsResponse"
+                    },
+                    "error_code": {
+                        "type": "string",
+                        "example": "FORBIDDEN"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "success"
+                    },
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    }
+                }
+            },
+            "model.GenericResponse-model_AIRecommendedPromptsResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "$ref": "#/components/schemas/model.AIRecommendedPromptsResponse"
+                    },
+                    "error_code": {
+                        "type": "string",
+                        "example": "FORBIDDEN"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "success"
+                    },
+                    "success": {
+                        "type": "boolean",
+                        "example": true
                     }
                 }
             },
