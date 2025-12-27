@@ -345,7 +345,7 @@
                 "tags": [
                     "Market"
                 ],
-                "summary": "AI Recommended Assets (Mock)",
+                "summary": "AI Recommended Assets",
                 "parameters": [
                     {
                         "description": "Tickers (required). ticker divided by ','. e.g. BTC,ETH,SOL",
