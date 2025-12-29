@@ -335,36 +335,28 @@
             }
         },
         "/v1/market/ai-recommended-assets": {
-            "get": {
+            "post": {
                 "security": [
                     {
                         "AccessToken": []
                     }
                 ],
-                "description": "Returns AI recommended assets data. It only filters by input assets and echoes timestamp.",
+                "description": "The AI Asset Recommendation API provides a data-driven ranking and evaluation of crypto assets listed in the Bithumb KRW market, combining real-time market data with multi-dimensional scoring and AI-generated interpretation.\nThe API consists of two core components:\n1. AI Recommendation List\nDelivers a ranked list of eligible assets based on a composite Total Score (0–10), calculated as the rounded average of five individual category scores.\n2. AI Recommendation Details\nProvides an in-depth evaluation for a selected asset, including real-time price information, overall recommendation summary, detailed score interpretation, category breakdowns, price change visualization, and social sentiment distribution.\nIf certain data is unavailable or not applicable, corresponding fields will return null or be omitted.",
                 "tags": [
                     "Market"
                 ],
                 "summary": "AI Recommended Assets",
-                "parameters": [
-                    {
-                        "description": "Tickers (required). ticker divided by ','. e.g. BTC,ETH,SOL",
-                        "name": "tickers",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/model.GetAIRecommendedAssetsRequest"
+                            }
                         }
                     },
-                    {
-                        "description": "Timestamp in YYYY-MM-DD HH:MM:SS format. If timestamp is not provided, returns the most recent data",
-                        "name": "timestamp",
-                        "in": "query",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
+                    "description": "Request body",
+                    "required": true
+                },
                 "responses": {
                     "200": {
                         "description": "Returns AI recommended assets on success",
@@ -396,7 +388,7 @@
                         "AccessToken": []
                     }
                 ],
-                "description": "Returns a list of AI recommended prompts for multiple categories.",
+                "description": "The AI Recommended Prompts API generates context-aware analytical questions and structured responses for the Bithumb KRW crypto market, helping users quickly understand current market conditions, asset movements, capital flows, and emerging narratives.\nThe API covers both fixed core questions (e.g. market sentiment, strongest momentum assets, trending issues) and dynamically selected questions from a predefined pool, which may change over time. Each prompt produces a structured output consisting of a concise summary, detailed analysis, and a neutral conclusion.",
                 "tags": [
                     "Market"
                 ],
@@ -452,7 +444,7 @@
                         "AccessToken": []
                     }
                 ],
-                "description": "Returns AI-generated report content for a given date and report type.",
+                "description": "AI Report API generates a structured research report for crypto assets, combining real-time market snapshots, trend summaries, technical analysis, sector-optimized on-chain metrics, and community sentiment insights.\nThe report is generated as a point-in-time snapshot and is designed to be beginner-friendly and neutral, presenting both bullish and bearish factors without providing financial advice.\nOn-chain indicators are dynamically selected based on the asset’s sector classification using a three-layer metric framework (common, shared, and sector-specific).\nIf certain data is unavailable or not applicable, corresponding fields will return null or be omitted.",
                 "tags": [
                     "Market"
                 ],
@@ -467,29 +459,19 @@
                         }
                     },
                     {
-                        "description": "Report type (template key)",
-                        "name": "type",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "realtime_info",
-                                "summary",
-                                "technical_analysis",
-                                "onchain_analysis",
-                                "social_data",
-                                "conclusion"
-                            ]
-                        }
-                    },
-                    {
                         "description": "Ticker (required)",
                         "name": "ticker",
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "enum": [
+                                "BTC",
+                                "ETH",
+                                "XRP",
+                                "SOL",
+                                "MON"
+                            ]
                         }
                     }
                 ],
@@ -676,7 +658,7 @@
                         "AccessToken": []
                     }
                 ],
-                "description": "Returns market report content for a given date and report type.",
+                "description": "The Market Report API provides a consolidated daily overview of the crypto market, combining market sentiment indicators, trend analysis, sector insights, news highlights, and asset performance into a single structured response.\nThe API evaluates overall market direction (Up / Flat / Down) using internal logic and sentiment indicators such as the Fear & Greed Index and the number of rising assets compared to the previous day. It also surfaces key market trends, trending sectors, and must-know news, including AI-highlighted headlines and major upcoming events.\nAdditionally, the API delivers asset-level insights such as top gainers and losers versus the previous day, along with optional notification prompts for market alerts. All outputs are generated as a point-in-time snapshot and are intended for informational purposes only, without providing investment advice.\nIf specific data points are unavailable, the corresponding fields will return null or be omitted.",
                 "tags": [
                     "Market"
                 ],
@@ -688,24 +670,6 @@
                         "in": "query",
                         "schema": {
                             "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Report type (template key)",
-                        "name": "type",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "market_sentiment",
-                                "market_trends",
-                                "trending_sectors",
-                                "must_know_news",
-                                "major_events_tonight",
-                                "top_gainers",
-                                "market_alerts"
-                            ]
                         }
                     }
                 ],
@@ -1045,12 +1009,10 @@
                 "type": "object",
                 "properties": {
                     "opinion": {
-                        "type": "string",
-                        "example": "Strong Positive"
+                        "type": "string"
                     },
                     "summary": {
-                        "type": "string",
-                        "example": "Bitcoin shows strong upward momentum supported by explosive trading volume and consistently positive market sentiment, while maintaining relatively stable price behavior."
+                        "type": "string"
                     }
                 }
             },
@@ -1064,8 +1026,7 @@
                         "$ref": "#/components/schemas/model.AIRecommendedAssetInfo"
                     },
                     "id": {
-                        "type": "string",
-                        "example": "AI-KRW-BTC-20251212-1300"
+                        "type": "string"
                     },
                     "price": {
                         "$ref": "#/components/schemas/model.AIRecommendedAssetPrice"
@@ -1091,16 +1052,13 @@
                 "type": "object",
                 "properties": {
                     "image_url": {
-                        "type": "string",
-                        "example": "https://static.bithumb.com/assets/btc.png"
+                        "type": "string"
                     },
                     "name": {
-                        "type": "string",
-                        "example": "Bitcoin"
+                        "type": "string"
                     },
                     "symbol": {
-                        "type": "string",
-                        "example": "BTC"
+                        "type": "string"
                     }
                 }
             },
@@ -1108,12 +1066,10 @@
                 "type": "object",
                 "properties": {
                     "change_rate": {
-                        "type": "number",
-                        "example": 0.1
+                        "type": "number"
                     },
                     "current": {
-                        "type": "integer",
-                        "example": 1570000
+                        "type": "number"
                     }
                 }
             },
@@ -1124,8 +1080,7 @@
                         "$ref": "#/components/schemas/model.AIRecommendedAssetRankingByCategory"
                     },
                     "overall_rank": {
-                        "type": "integer",
-                        "example": 1
+                        "type": "integer"
                     }
                 }
             },
@@ -1133,24 +1088,19 @@
                 "type": "object",
                 "properties": {
                     "market_sentiment": {
-                        "type": "integer",
-                        "example": 1
+                        "type": "integer"
                     },
                     "price_stability": {
-                        "type": "integer",
-                        "example": 3
+                        "type": "integer"
                     },
                     "search_trend": {
-                        "type": "integer",
-                        "example": 2
+                        "type": "integer"
                     },
                     "trading_activity": {
-                        "type": "integer",
-                        "example": 1
+                        "type": "integer"
                     },
                     "upside_energy": {
-                        "type": "integer",
-                        "example": 1
+                        "type": "integer"
                     }
                 }
             },
@@ -1158,16 +1108,13 @@
                 "type": "object",
                 "properties": {
                     "bearish": {
-                        "type": "integer",
-                        "example": 17
+                        "type": "integer"
                     },
                     "bullish": {
-                        "type": "integer",
-                        "example": 62
+                        "type": "integer"
                     },
                     "neutral": {
-                        "type": "integer",
-                        "example": 21
+                        "type": "integer"
                     }
                 }
             },
@@ -1175,8 +1122,7 @@
                 "type": "object",
                 "properties": {
                     "total": {
-                        "type": "number",
-                        "example": 8.6
+                        "type": "number"
                     }
                 }
             },
@@ -1184,24 +1130,19 @@
                 "type": "object",
                 "properties": {
                     "market_sentiment": {
-                        "type": "number",
-                        "example": 8.3
+                        "type": "number"
                     },
                     "price_stability": {
-                        "type": "number",
-                        "example": 7.1
+                        "type": "number"
                     },
                     "search_trend": {
-                        "type": "number",
-                        "example": 7.8
+                        "type": "number"
                     },
                     "trading_activity": {
-                        "type": "number",
-                        "example": 9.2
+                        "type": "number"
                     },
                     "upside_energy": {
-                        "type": "number",
-                        "example": 8.9
+                        "type": "number"
                     }
                 }
             },
@@ -1209,24 +1150,19 @@
                 "type": "object",
                 "properties": {
                     "market_sentiment": {
-                        "type": "string",
-                        "example": "Very Positive Signal"
+                        "type": "string"
                     },
                     "price_stability": {
-                        "type": "string",
-                        "example": "Stable Flow"
+                        "type": "string"
                     },
                     "search_trend": {
-                        "type": "string",
-                        "example": "Increasing Interest"
+                        "type": "string"
                     },
                     "trading_activity": {
-                        "type": "string",
-                        "example": "Volume Explosion"
+                        "type": "string"
                     },
                     "upside_energy": {
-                        "type": "string",
-                        "example": "Strong Uptrend"
+                        "type": "string"
                     }
                 }
             },
@@ -1240,12 +1176,10 @@
                         }
                     },
                     "generated_at": {
-                        "type": "string",
-                        "example": "2025-12-12T13:00:00+09:00"
+                        "type": "string"
                     },
                     "ranking_method": {
-                        "type": "string",
-                        "example": "total_score_desc"
+                        "type": "string"
                     }
                 }
             },
@@ -1263,7 +1197,13 @@
             "model.AIRecommendedPromptsResponse": {
                 "type": "object",
                 "properties": {
-                    "prompts": {
+                    "fixed_questions": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/model.AIRecommendedPrompt"
+                        }
+                    },
+                    "recommended_questions": {
                         "type": "array",
                         "items": {
                             "$ref": "#/components/schemas/model.AIRecommendedPrompt"
@@ -1655,6 +1595,41 @@
                     "success": {
                         "type": "boolean",
                         "example": true
+                    }
+                }
+            },
+            "model.GetAIRecommendedAsset": {
+                "type": "object",
+                "required": [
+                    "current",
+                    "ticker"
+                ],
+                "properties": {
+                    "change_rate": {
+                        "type": "number"
+                    },
+                    "current": {
+                        "type": "number"
+                    },
+                    "ticker": {
+                        "type": "string"
+                    }
+                }
+            },
+            "model.GetAIRecommendedAssetsRequest": {
+                "type": "object",
+                "required": [
+                    "assets"
+                ],
+                "properties": {
+                    "assets": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/model.GetAIRecommendedAsset"
+                        }
+                    },
+                    "timestamp": {
+                        "type": "string"
                     }
                 }
             },

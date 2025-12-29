@@ -23,7 +23,7 @@
                     "GET /v1/market/report",
                     "GET /v1/market/ai-report",
                     "GET /v1/market/ai-recommended-prompts",
-                    "GET /v1/market/ai-recommended-assets"
+                    "POST /v1/market/ai-recommended-assets"
                 ],
                 "api": {
                     "playground": {
