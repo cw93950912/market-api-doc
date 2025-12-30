@@ -1,0 +1,76 @@
+---
+title: AI Recommended Assets
+description: Data-driven ranking + AI interpretation for Bithumb KRW market assets.
+openapi: openapi.json GET /v1/market/ai-recommended-assets
+---
+
+<div style={{ maxWidth: 760 }}>
+
+<h2 style={{ fontSize: "22px", marginBottom: 8 }}>Overview</h2>
+
+<p style={{ fontSize: 15, lineHeight: 1.8 }}>
+  The <strong>AI Asset Recommendation</strong> API provides a data-driven ranking and evaluation of crypto assets
+  listed in the <strong>Bithumb KRW</strong> market. It combines market data with multi-dimensional scoring and
+  AI-generated interpretation.
+</p>
+
+<Note>
+  This endpoint is labeled <strong>Mock</strong> in the spec. Treat outputs as informational snapshots.
+</Note>
+
+<h3 style={{ marginTop: 20 }}>Two core components</h3>
+
+<ul style={{ fontSize: 15, lineHeight: 1.8 }}>
+  <li>
+    <strong>Recommendation List</strong>: ranked assets based on a composite <code>Total Score</code> (0–10),
+    computed as the rounded average of five category scores.
+  </li>
+  <li>
+    <strong>Recommendation Details</strong>: in-depth evaluation for each asset, including score interpretation,
+    category breakdown, price context, and social sentiment distribution.
+  </li>
+</ul>
+
+<h3 style={{ marginTop: 20 }}>Scoring model</h3>
+
+<div style={{ fontSize: 15, lineHeight: 1.8 }}>
+  <p style={{ marginBottom: 8 }}>
+    Total Score is derived from five categories (each 0–10):
+  </p>
+
+  <ul>
+    <li><strong>Market Sentiment</strong></li>
+    <li><strong>Price Stability</strong></li>
+    <li><strong>Search Trend</strong></li>
+    <li><strong>Trading Activity</strong></li>
+    <li><strong>Upside Energy</strong></li>
+  </ul>
+
+  <p style={{ marginTop: 10 }}>
+    The response includes both <code>score_by_category</code> and <code>score_interpretation</code>.
+  </p>
+</div>
+
+<h3 style={{ marginTop: 20 }}>How to use</h3>
+
+<Steps>
+  <Step title="Provide asset candidates">
+    Send an array of assets with <code>ticker</code> and <code>current</code> price (required per item). You may include
+    <code>change_rate</code> when available.
+  </Step>
+
+  <Step title="Optional: attach timestamp">
+    Include <code>timestamp</code> to annotate the snapshot timing (if your pipeline tracks it).
+  </Step>
+
+  <Step title="Read ranking + evaluation">
+    Use <code>ranking.overall_rank</code> and <code>score.total</code> to sort, then display <code>ai_evaluation.summary</code> /
+    <code>ai_evaluation.opinion</code> for the narrative layer.
+  </Step>
+</Steps>
+
+<Warning>
+  If certain data is unavailable or not applicable, corresponding fields may be <code>null</code> or omitted.
+</Warning>
+
+</div>

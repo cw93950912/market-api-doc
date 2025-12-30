@@ -18,12 +18,12 @@
             },
             {
                 "group": "API reference",
-                "openapi": "openapi.json",
+
                 "pages": [
-                    "GET /v1/market/report",
-                    "GET /v1/market/ai-report",
-                    "GET /v1/market/ai-recommended-prompts",
-                    "POST /v1/market/ai-recommended-assets"
+                    "market-report",
+                    "ai-report",
+                    "ai-recommended-prompts",
+                    "ai-recommended-assets"
                 ],
                 "api": {
                     "playground": {

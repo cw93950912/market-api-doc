@@ -1,0 +1,39 @@
+---
+title: Market Report
+description: Consolidated daily overview of the crypto market
+openapi: openapi.json GET /v1/market/report
+---
+
+<div style={{ maxWidth: 720 }}>
+
+<h2 style={{ fontSize: '22px', marginBottom: '8px' }}>
+  Overview
+</h2>
+
+<p style={{ fontSize: '15px', lineHeight: '1.8', color: '#374151' }}>
+  The Market Report API provides a consolidated daily overview of the crypto market,
+  combining market sentiment indicators, trend analysis, sector insights,
+  news highlights, and asset performance.
+</p>
+
+<p style={{ fontSize: '15px', lineHeight: '1.8' }}>
+  The API evaluates overall market direction
+  <strong> (Up / Flat / Down)</strong> using internal logic and sentiment indicators
+  such as the Fear & Greed Index.
+</p>
+
+<Note>
+  All outputs are generated as a <strong>point-in-time snapshot</strong> and are intended
+  for informational purposes only. This API does not provide investment advice.
+</Note>
+
+<h3 style={{ marginTop: '24px' }}>What you get</h3>
+
+<ul style={{ fontSize: '15px', lineHeight: '1.8' }}>
+  <li>Overall market direction (Up / Flat / Down)</li>
+  <li>Trending sectors and assets</li>
+  <li>Top gainers and losers vs previous day</li>
+  <li>Major news and upcoming events</li>
+</ul>
+
+</div>

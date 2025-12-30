@@ -1,0 +1,53 @@
+---
+title: AI Report
+description: Structured research report for a crypto asset (snapshot, neutral, beginner-friendly).
+openapi: openapi.json GET /v1/market/ai-report
+---
+
+<div style={{ maxWidth: 760 }}>
+
+<h2 style={{ fontSize: "22px", marginBottom: 8 }}>Overview</h2>
+
+<p style={{ fontSize: 15, lineHeight: 1.8 }}>
+  The <strong>AI Report</strong> API generates a structured research report for a given crypto asset,
+  combining real-time market snapshots, trend summaries, technical analysis, sector-optimized on-chain metrics,
+  and community sentiment insights.
+</p>
+
+<Note>
+  This report is a <strong>point-in-time snapshot</strong> and is intended for informational purposes only.
+  It does not provide financial advice.
+</Note>
+
+<h3 style={{ marginTop: 20 }}>What you’ll get</h3>
+
+<ul style={{ fontSize: 15, lineHeight: 1.8 }}>
+  <li><strong>Realtime info</strong>: current snapshot & context for the asset</li>
+  <li><strong>Summary</strong>: concise, beginner-friendly market read</li>
+  <li><strong>Technical analysis</strong>: key chart / momentum interpretations</li>
+  <li><strong>On-chain analysis</strong>: sector-aware on-chain metrics (common/shared/sector-specific)</li>
+  <li><strong>Social data</strong>: community sentiment signals</li>
+  <li><strong>Conclusion</strong>: neutral wrap-up (bullish & bearish factors)</li>
+</ul>
+
+<h3 style={{ marginTop: 20 }}>How to use</h3>
+
+<Steps>
+  <Step title="Pick a ticker">
+    Provide <code>ticker</code> (required). Example: <code>BTC</code>, <code>ETH</code>.
+  </Step>
+
+  <Step title="Select a report section">
+    Use <code>type</code> to request a specific section (e.g. <code>summary</code>, <code>technical_analysis</code>).
+  </Step>
+
+  <Step title="Optional: backfill by date">
+    Provide <code>date</code> (YYYY-MM-DD). If omitted, the latest snapshot is returned.
+  </Step>
+</Steps>
+
+<Warning>
+  If certain data is unavailable or not applicable, corresponding fields may be <code>null</code> or omitted.
+</Warning>
+
+</div>
