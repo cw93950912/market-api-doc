@@ -17,13 +17,33 @@
                 ]
             },
             {
-                "group": "API reference",
-                "openapi": "openapi.json",
+                "group": "Market API",
                 "pages": [
-                    "GET /v1/market/report",
-                    "GET /v1/market/ai-report",
-                    "GET /v1/market/ai-recommended-prompts"
-                    
+                    "must-know-news",
+                    "rise-tokens",
+                    "drop-tokens",
+                    "sentiment",
+                    "trends",
+                    "events"
+                ],
+                "api": {
+                    "playground": {
+                        "display": "interactive",
+                        "validation": {
+                            "enabled": true
+                        }
+                    },
+                    "examples": {
+                        "languages": ["curl", "python", "javascript"]
+                    }
+                }
+            },
+            {
+                "group": "Other APIs",
+                "pages": [
+                    "ai-report",
+                    "ai-recommended-prompts",
+                    "ai-recommended-assets"
                 ],
                 "api": {
                     "playground": {

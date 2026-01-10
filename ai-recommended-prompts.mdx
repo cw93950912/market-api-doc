@@ -1,0 +1,52 @@
+---
+title: AI Recommended Prompts
+description: Context-aware analytical questions + structured responses for the Bithumb KRW market.
+openapi: openapi.json GET /v1/market/ai-recommended-prompts
+---
+
+<div style={{ maxWidth: 760 }}>
+
+<h2 style={{ fontSize: "22px", marginBottom: 8 }}>Overview</h2>
+
+<p style={{ fontSize: 15, lineHeight: 1.8 }}>
+  The <strong>AI Recommended Prompts</strong> API generates context-aware analytical questions and structured
+  responses for the <strong>Bithumb KRW</strong> crypto market. It helps users quickly understand market conditions,
+  asset movements, capital flows, and emerging narratives.
+</p>
+
+<Note>
+  Prompts include both <strong>fixed core questions</strong> and <strong>dynamically selected questions</strong> from a pool
+  that may change over time.
+</Note>
+
+<h3 style={{ marginTop: 20 }}>Prompt categories</h3>
+
+<ul style={{ fontSize: 15, lineHeight: 1.8 }}>
+  <li><strong>Market sentiment</strong>: overall mood & breadth</li>
+  <li><strong>Momentum</strong>: strongest movers and why</li>
+  <li><strong>Trending issues</strong>: what the market is talking about</li>
+  <li><strong>Directional picks</strong>: <code>go_up</code> / <code>go_down</code> (may require <code>ticker</code>)</li>
+  <li><strong>Narratives</strong>: KOL discussions / sector rotations</li>
+</ul>
+
+<h3 style={{ marginTop: 20 }}>How to use</h3>
+
+<Steps>
+  <Step title="Choose a type">
+    Set <code>type</code> (required) as the prompt template key. Different types produce different structured outputs.
+  </Step>
+
+  <Step title="Optional: choose a date">
+    Provide <code>date</code> (YYYY-MM-DD) to view historical context. Default is the latest available snapshot.
+  </Step>
+
+  <Step title="Optional: provide ticker (only for some types)">
+    When <code>type</code> is <code>go_up</code> or <code>go_down</code>, you should pass <code>ticker</code>.
+  </Step>
+</Steps>
+
+<Warning>
+  Outputs are for informational purposes only and should not be interpreted as financial advice.
+</Warning>
+
+</div>
