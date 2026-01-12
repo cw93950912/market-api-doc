@@ -957,11 +957,11 @@
                         "AccessToken": []
                     }
                 ],
-                "description": "Returns must-know news list for a given date (optional).",
+                "description": "Render as a digest\nDisplay the list as a daily macro/market digest and link out to the original sources when available.\nMust-know macro/market news list for a given date (optional).",
                 "tags": [
                     "Market"
                 ],
-                "summary": "Must-Know News",
+                "summary": "AI-Highlighted news",
                 "parameters": [
                     {
                         "description": "Date in YYYY-MM-DD format. If date is not provided, returns the most recent data",
@@ -1190,14 +1190,14 @@
                         "AccessToken": []
                     }
                 ],
-                "description": "Returns market sentiment snapshot.\nThis endpoint is reserved for future DB-backed implementation; the optional date param is currently ignored.",
+                "description": "Returns market sentiment snapshot.\nData is fetched from `bithumb_reports` by signal_type = market_sentiment and the latest batch_sequence (optionally filtered by date).",
                 "tags": [
                     "Market"
                 ],
                 "summary": "Market Sentiment",
                 "parameters": [
                     {
-                        "description": "Date in YYYY-MM-DD format (reserved; currently ignored)",
+                        "description": "Date in YYYY-MM-DD format. If date is not provided, returns the most recent data",
                         "name": "date",
                         "in": "query",
                         "schema": {
@@ -1228,6 +1228,16 @@
                     },
                     "401": {
                         "description": "When unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "When message not found",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1973,11 +1983,11 @@
             "model.MarketSentimentResponse": {
                 "type": "object",
                 "properties": {
+                    "feer_greed_index": {
+                        "type": "integer"
+                    },
                     "feer_greed_interpretation": {
                         "type": "string"
-                    },
-                    "feer_greed_point": {
-                        "type": "integer"
                     },
                     "market_price_fluctuations": {
                         "type": "array",
@@ -1985,7 +1995,7 @@
                             "$ref": "#/components/schemas/model.MarketPriceFluctuation"
                         }
                     },
-                    "risingAssetsVsPreviousDay": {
+                    "rising_assets_vs_previous_day": {
                         "type": "integer"
                     }
                 }
