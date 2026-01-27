@@ -571,7 +571,7 @@
                         }
                     },
                     {
-                        "description": "Tickers (comma separated, required. support BTC,ETH,SOL. e.g BTC,ETH)",
+                        "description": "Tickers (comma separated, required. e.g BTC,ETH)",
                         "name": "tickers",
                         "in": "query",
                         "required": true,
