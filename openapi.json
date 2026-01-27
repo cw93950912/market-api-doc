@@ -545,10 +545,10 @@
                 "tags": [
                     "Market"
                 ],
-                "summary": "AI Recommended Assets (Mock)",
+                "summary": "AI Recommended Assets",
                 "parameters": [
                     {
-                        "description": "Date in YYYY-MM-DD format. If date is not provided, returns the most recent data",
+                        "description": "Date in YYYY-MM-DD format. Returns scores at KST 00:00 of the specified date. If not provided, returns the most recent data",
                         "name": "date",
                         "in": "query",
                         "schema": {
@@ -1354,10 +1354,10 @@
                 "type": "object",
                 "properties": {
                     "bearish": {
-                        "type": "integer"
+                        "type": "number"
                     },
                     "bullish": {
-                        "type": "integer"
+                        "type": "number"
                     },
                     "id": {
                         "type": "string"
@@ -1371,17 +1371,17 @@
                     "name": {
                         "type": "string"
                     },
-                    "neutral": {
-                        "type": "integer"
-                    },
                     "opinion": {
                         "type": "string"
                     },
                     "overall_rank": {
                         "type": "integer"
                     },
-                    "score_by_category": {
+                    "ranking_by_category": {
                         "$ref": "#/components/schemas/model.AIRecommendedAssetRankingByCategory"
+                    },
+                    "score_by_category": {
+                        "$ref": "#/components/schemas/model.AIRecommendedAssetScoreByCategory"
                     },
                     "summary": {
                         "type": "string"
@@ -1411,6 +1411,26 @@
                     },
                     "upside_energy": {
                         "type": "integer"
+                    }
+                }
+            },
+            "model.AIRecommendedAssetScoreByCategory": {
+                "type": "object",
+                "properties": {
+                    "market_sentiment": {
+                        "type": "number"
+                    },
+                    "price_stability": {
+                        "type": "number"
+                    },
+                    "search_trend": {
+                        "type": "number"
+                    },
+                    "trading_activity": {
+                        "type": "number"
+                    },
+                    "upside_energy": {
+                        "type": "number"
                     }
                 }
             },
@@ -1448,6 +1468,23 @@
                     }
                 }
             },
+            "model.Ability": {
+                "type": "string",
+                "enum": [
+                    "search",
+                    "evm_onchain",
+                    "solana_onchain",
+                    "market_analysis",
+                    "calculate"
+                ],
+                "x-enum-varnames": [
+                    "AbilitySearch",
+                    "AbilityEVMOnchain",
+                    "AbilitySolanaOnchain",
+                    "AbilityMarketAnalysis",
+                    "AbilityCalculate"
+                ]
+            },
             "model.BaseResponse": {
                 "type": "object",
                 "properties": {
@@ -1464,6 +1501,17 @@
                         "example": true
                     }
                 }
+            },
+            "model.Citation": {
+                "type": "string",
+                "enum": [
+                    "source",
+                    "chart"
+                ],
+                "x-enum-varnames": [
+                    "CitationSource",
+                    "CitationChart"
+                ]
             },
             "model.CompletionsChoice": {
                 "type": "object",
@@ -1540,6 +1588,27 @@
             "model.CompletionsRequest": {
                 "type": "object",
                 "properties": {
+                    "ability": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/model.Ability"
+                        },
+                        "example": [
+                            "[\"evm_onchain\"",
+                            "\"market_analysis\"",
+                            "\"calculate\"]"
+                        ]
+                    },
+                    "citation": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/model.Citation"
+                        },
+                        "example": [
+                            "[\"source\"",
+                            "\"chart\"]"
+                        ]
+                    },
                     "messages": {
                         "type": "array",
                         "items": {
@@ -1554,9 +1623,28 @@
                         ],
                         "example": "surf-ask"
                     },
+                    "reasoning_effort": {
+                        "enum": [
+                            "low",
+                            "medium",
+                            "high"
+                        ],
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/model.ReasoningEffort"
+                            }
+                        ],
+                        "example": "medium"
+                    },
                     "stream": {
                         "type": "boolean",
                         "example": false
+                    },
+                    "tools": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/model.Tool"
+                        }
                     }
                 }
             },
@@ -1873,6 +1961,27 @@
             "model.InternalCompletionsRequest": {
                 "type": "object",
                 "properties": {
+                    "ability": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/model.Ability"
+                        },
+                        "example": [
+                            "[\"evm_onchain\"",
+                            "\"market_analysis\"",
+                            "\"calculate\"]"
+                        ]
+                    },
+                    "citation": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/model.Citation"
+                        },
+                        "example": [
+                            "[\"source\"",
+                            "\"chart\"]"
+                        ]
+                    },
                     "messages": {
                         "type": "array",
                         "items": {
@@ -1883,9 +1992,28 @@
                         "type": "string",
                         "example": "surf-ask"
                     },
+                    "reasoning_effort": {
+                        "enum": [
+                            "low",
+                            "medium",
+                            "high"
+                        ],
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/model.ReasoningEffort"
+                            }
+                        ],
+                        "example": "medium"
+                    },
                     "stream": {
                         "type": "boolean",
                         "example": false
+                    },
+                    "tools": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/model.Tool"
+                        }
                     }
                 }
             },
@@ -1918,11 +2046,13 @@
                 "type": "string",
                 "enum": [
                     "surf-ask",
-                    "surf-research"
+                    "surf-research",
+                    "surf-1.5"
                 ],
                 "x-enum-varnames": [
                     "LLMModelSURFASK",
-                    "LLMModelSURFRESEARCH"
+                    "LLMModelSURFRESEARCH",
+                    "LLMModelSURF15"
                 ]
             },
             "model.ListTenantsResponseData": {
@@ -2038,6 +2168,19 @@
                     }
                 }
             },
+            "model.ReasoningEffort": {
+                "type": "string",
+                "enum": [
+                    "low",
+                    "medium",
+                    "high"
+                ],
+                "x-enum-varnames": [
+                    "ReasoningEffortLow",
+                    "ReasoningEffortMedium",
+                    "ReasoningEffortHigh"
+                ]
+            },
             "model.Role": {
                 "type": "string",
                 "enum": [
@@ -2114,6 +2257,51 @@
                         "type": "string"
                     }
                 }
+            },
+            "model.Tool": {
+                "type": "object",
+                "properties": {
+                    "function": {
+                        "$ref": "#/components/schemas/model.ToolFunction"
+                    },
+                    "type": {
+                        "enum": [
+                            "function"
+                        ],
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/model.ToolType"
+                            }
+                        ],
+                        "example": "function"
+                    }
+                }
+            },
+            "model.ToolFunction": {
+                "type": "object",
+                "properties": {
+                    "description": {
+                        "type": "string",
+                        "example": "Calculate the total value of a crypto portfolio"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "calculate_portfolio_value"
+                    },
+                    "parameters": {
+                        "description": "Parameters is a JSON Schema object.",
+                        "type": "object"
+                    }
+                }
+            },
+            "model.ToolType": {
+                "type": "string",
+                "enum": [
+                    "function"
+                ],
+                "x-enum-varnames": [
+                    "ToolTypeFunction"
+                ]
             },
             "model.UpdateTenantNameRequest": {
                 "type": "object",
