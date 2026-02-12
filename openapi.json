@@ -217,6 +217,86 @@
                 }
             }
         },
+        "/v1/admin/tenants/usage": {
+            "get": {
+                "security": [
+                    {
+                        "AccessToken": []
+                    }
+                ],
+                "description": "Filter tenant_usage_histories by date, arg, url (all optional); group by arg, url, tenant_id to sum amount, output sorted by amount descending",
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Aggregate tenant_usage_histories by arg, url, tenant_id",
+                "parameters": [
+                    {
+                        "description": "Optional, format 2006-01-02 or RFC3339; omit for no filter; when set, filter created_at >= date",
+                        "name": "date",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Optional; omit for no filter, when set filter by arg",
+                        "name": "arg",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "surf-ask",
+                                "surf-research",
+                                "surf-1.5-instant",
+                                "surf-1.5-thinking-low",
+                                "surf-1.5-thinking-medium",
+                                "surf-1.5-thinking-high"
+                            ]
+                        }
+                    },
+                    {
+                        "description": "Optional; omit for no filter, when set filter by url",
+                        "name": "url",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.GenericResponse-model_TenantUsageHistoryAggregatedResponseData"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/v1/admin/tenants/{id}": {
             "get": {
                 "security": [
@@ -289,11 +369,11 @@
                         "AccessToken": []
                     }
                 ],
-                "description": "Update tenant name by tenant_id (UUID)",
+                "description": "Modify tenant by tenant_id. Only updates fields that are provided in the request; omitted fields are left unchanged.",
                 "tags": [
                     "admin"
                 ],
-                "summary": "Update tenant name",
+                "summary": "Modify tenant",
                 "parameters": [
                     {
                         "description": "tenant_id (UUID)",
@@ -309,11 +389,11 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/model.UpdateTenantNameRequest"
+                                "$ref": "#/components/schemas/model.ModifyTenantRequest"
                             }
                         }
                     },
-                    "description": "Update tenant name request",
+                    "description": "Modify tenant request",
                     "required": true
                 },
                 "responses": {
@@ -322,7 +402,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/model.GenericResponse-model_UpdateTenantNameResponseData"
+                                    "$ref": "#/components/schemas/model.GenericResponse-model_ModifyTenantResponseData"
                                 }
                             }
                         }
@@ -339,6 +419,319 @@
                     },
                     "404": {
                         "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/admin/tenants/{id}/usage-summary": {
+            "get": {
+                "security": [
+                    {
+                        "AccessToken": []
+                    }
+                ],
+                "description": "Query tenant_usage_histories by tenant_id, group by url and arg to sum amount; optional date param filters created_at >= date",
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Summarize tenant usage by url and arg",
+                "parameters": [
+                    {
+                        "description": "tenant_id (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Optional, format 2006-01-02 or RFC3339; omit to query all",
+                        "name": "date",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.GenericResponse-model_TenantUsageSummaryResponseData"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/auth/oauth/google": {
+            "post": {
+                "description": "Authenticate using Google OAuth ID token. Verifies the Google credentials and returns access token and refresh token upon successful authentication. Only works if the email exists in the tenant table.",
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Google OAuth login",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/model.GoogleLoginRequest"
+                            }
+                        }
+                    },
+                    "description": "Google login request",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.GenericResponse-model_LoginResult"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid Google credentials",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/auth/otp/login": {
+            "post": {
+                "description": "Authenticate using email and OTP code. Returns access token and refresh token upon successful verification. Only works if the email exists in the tenant table.",
+                "tags": [
+                    "auth"
+                ],
+                "summary": "OTP login",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/model.OtpLoginRequest"
+                            }
+                        }
+                    },
+                    "description": "OTP login request",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.GenericResponse-model_LoginResult"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid OTP",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/auth/otp/send": {
+            "post": {
+                "description": "Send a one-time password (OTP) code to the specified email address. Only works if the email exists in the tenant table.",
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Send OTP email",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/model.SendEmailOtpRequest"
+                            }
+                        }
+                    },
+                    "description": "Send OTP request",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.GenericResponse-model_SendEmailOtpResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - Tenant not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/auth/refresh": {
+            "post": {
+                "description": "Validate refresh token, extend its expiry, and return a new access token along with the same refresh token.",
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Refresh access token",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/model.RefreshAccessTokenRequest"
+                            }
+                        }
+                    },
+                    "description": "Refresh token request",
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.GenericResponse-model_LoginResult"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or expired refresh token",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -447,6 +840,72 @@
                 }
             }
         },
+        "/v1/dashboard/usage-summary": {
+            "get": {
+                "security": [
+                    {
+                        "AccessToken": []
+                    }
+                ],
+                "description": "Query tenant_usage_histories for the authenticated user's tenant in the period that contains the given date (or current period if date omitted). Period is from tenant creation, refreshing every month. Returns tenant credit_limit/10 and type. Only supports Token authentication.",
+                "tags": [
+                    "user"
+                ],
+                "summary": "Get current user's usage summary by url and arg",
+                "parameters": [
+                    {
+                        "description": "Optional, format 2006-01-02 or RFC3339; omit for current period",
+                        "name": "date",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.GenericResponse-model_TenantUsageSummaryResponseData"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/v1/internal/chat/completions": {
             "post": {
                 "security": [
@@ -534,6 +993,176 @@
                 }
             }
         },
+        "/v1/internal/market/sentiment": {
+            "get": {
+                "security": [
+                    {
+                        "AccessToken": []
+                    }
+                ],
+                "description": "Returns the latest sentiment value for a single symbol from ta_indicator_scores (sourced from sentiment_raw), along with historical changes at 4h, 24h, 7d, and 30d look-back periods using nearest-prior rows.",
+                "tags": [
+                    "Internal"
+                ],
+                "summary": "TA Sentiment Raw",
+                "parameters": [
+                    {
+                        "description": "Canonical symbol (e.g. BTC, ETH)",
+                        "name": "symbol",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Exchange name (default BITHUMB)",
+                        "name": "exchange",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns sentiment value on success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.GenericResponse-model_TASentimentResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "When symbol parameter is missing",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "When unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "When no indicator data found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/internal/market/ta-indicators": {
+            "get": {
+                "security": [
+                    {
+                        "AccessToken": []
+                    }
+                ],
+                "description": "Returns the latest technical indicator values for a single symbol, along with historical changes at 4h, 24h, 7d, and 30d look-back periods. For each period, the API uses the nearest historical row whose open_time is at or before the target look-back timestamp.",
+                "tags": [
+                    "Internal"
+                ],
+                "summary": "Technical Analysis Indicators",
+                "parameters": [
+                    {
+                        "description": "Canonical symbol (e.g. BTC, ETH)",
+                        "name": "symbol",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Exchange name (default BITHUMB)",
+                        "name": "exchange",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns indicator data on success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.GenericResponse-model_TAIndicatorsResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "When symbol parameter is missing",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "When unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "When no indicator data found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/v1/market/ai-recommended-assets": {
             "get": {
                 "security": [
@@ -571,7 +1200,7 @@
                         }
                     },
                     {
-                        "description": "Tickers (comma separated, required. e.g BTC,ETH)",
+                        "description": "Tickers (comma separated, required. support BTC,ETH,SOL. e.g BTC,ETH)",
                         "name": "tickers",
                         "in": "query",
                         "required": true,
@@ -723,23 +1352,6 @@
                         }
                     },
                     {
-                        "description": "Report type (template key)",
-                        "name": "type",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "realtime_info",
-                                "summary",
-                                "technical_analysis",
-                                "onchain_analysis",
-                                "social_data",
-                                "conclusion"
-                            ]
-                        }
-                    },
-                    {
                         "description": "Ticker (required)",
                         "name": "ticker",
                         "in": "query",
@@ -760,7 +1372,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/model.GenericResponse-model_QuestionResponse"
+                                    "$ref": "#/components/schemas/model.GenericResponse-model_ComprehensiveReportResponse"
                                 }
                             }
                         }
@@ -1665,6 +2277,127 @@
                     }
                 }
             },
+            "model.ComprehensiveData": {
+                "type": "object",
+                "properties": {
+                    "development_ecosystem": {
+                        "type": "string"
+                    },
+                    "infrastructure_stability": {
+                        "type": "string"
+                    },
+                    "market_valuation": {
+                        "type": "string"
+                    },
+                    "network_health": {
+                        "type": "string"
+                    }
+                }
+            },
+            "model.ComprehensiveReportCommunity": {
+                "type": "object",
+                "properties": {
+                    "key_topics": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "overall_sentiment": {
+                        "$ref": "#/components/schemas/model.OverallSentiment"
+                    }
+                }
+            },
+            "model.ComprehensiveReportConclusion": {
+                "type": "object",
+                "properties": {
+                    "cautionary_factors": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "overall_opinion": {
+                        "type": "string"
+                    },
+                    "positive_factors": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "model.ComprehensiveReportOnchain": {
+                "type": "object",
+                "properties": {
+                    "comprehensive_data": {
+                        "$ref": "#/components/schemas/model.ComprehensiveData"
+                    },
+                    "outlook": {
+                        "type": "string"
+                    },
+                    "precautions": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "sector_group": {
+                        "$ref": "#/components/schemas/model.SectorGroup"
+                    }
+                }
+            },
+            "model.ComprehensiveReportResponse": {
+                "type": "object",
+                "properties": {
+                    "community": {
+                        "$ref": "#/components/schemas/model.ComprehensiveReportCommunity"
+                    },
+                    "conclusion": {
+                        "$ref": "#/components/schemas/model.ComprehensiveReportConclusion"
+                    },
+                    "onchain": {
+                        "$ref": "#/components/schemas/model.ComprehensiveReportOnchain"
+                    },
+                    "summary": {
+                        "$ref": "#/components/schemas/model.ComprehensiveReportSummary"
+                    },
+                    "technical": {
+                        "$ref": "#/components/schemas/model.ComprehensiveReportTechnical"
+                    },
+                    "title": {
+                        "$ref": "#/components/schemas/model.ComprehensiveReportTitle"
+                    }
+                }
+            },
+            "model.ComprehensiveReportSummary": {
+                "type": "object",
+                "properties": {
+                    "summary": {
+                        "type": "string"
+                    }
+                }
+            },
+            "model.ComprehensiveReportTechnical": {
+                "type": "object",
+                "properties": {
+                    "indicators": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/model.TechnicalIndicator"
+                        }
+                    }
+                }
+            },
+            "model.ComprehensiveReportTitle": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string"
+                    }
+                }
+            },
             "model.CreateAPIKeyRequest": {
                 "type": "object",
                 "properties": {
@@ -1684,11 +2417,29 @@
                     }
                 }
             },
+            "model.CreateTenantPriceItem": {
+                "type": "object",
+                "properties": {
+                    "arg": {
+                        "type": "string"
+                    },
+                    "price": {
+                        "type": "integer"
+                    }
+                }
+            },
             "model.CreateTenantRequest": {
                 "type": "object",
                 "properties": {
                     "create_api_key": {
                         "type": "boolean"
+                    },
+                    "credit_limit": {
+                        "type": "integer"
+                    },
+                    "email": {
+                        "description": "用于 Google/OTP 登录，唯一索引，可为空",
+                        "type": "string"
                     },
                     "limit": {
                         "type": "integer"
@@ -1698,6 +2449,13 @@
                     },
                     "period": {
                         "type": "integer"
+                    },
+                    "prices": {
+                        "description": "可选，按 arg 覆盖默认单价，写入 DB 时为 price*10",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/model.CreateTenantPriceItem"
+                        }
                     },
                     "type": {
                         "description": "默认建议使用 API",
@@ -1798,6 +2556,26 @@
                     }
                 }
             },
+            "model.GenericResponse-model_ComprehensiveReportResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "$ref": "#/components/schemas/model.ComprehensiveReportResponse"
+                    },
+                    "error_code": {
+                        "type": "string",
+                        "example": "FORBIDDEN"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "success"
+                    },
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    }
+                }
+            },
             "model.GenericResponse-model_CreateAPIKeyResponseData": {
                 "type": "object",
                 "properties": {
@@ -1878,11 +2656,51 @@
                     }
                 }
             },
+            "model.GenericResponse-model_LoginResult": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "$ref": "#/components/schemas/model.LoginResult"
+                    },
+                    "error_code": {
+                        "type": "string",
+                        "example": "FORBIDDEN"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "success"
+                    },
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    }
+                }
+            },
             "model.GenericResponse-model_MarketSentimentResponse": {
                 "type": "object",
                 "properties": {
                     "data": {
                         "$ref": "#/components/schemas/model.MarketSentimentResponse"
+                    },
+                    "error_code": {
+                        "type": "string",
+                        "example": "FORBIDDEN"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "success"
+                    },
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    }
+                }
+            },
+            "model.GenericResponse-model_ModifyTenantResponseData": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "$ref": "#/components/schemas/model.ModifyTenantResponseData"
                     },
                     "error_code": {
                         "type": "string",
@@ -1938,6 +2756,106 @@
                     }
                 }
             },
+            "model.GenericResponse-model_SendEmailOtpResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "$ref": "#/components/schemas/model.SendEmailOtpResponse"
+                    },
+                    "error_code": {
+                        "type": "string",
+                        "example": "FORBIDDEN"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "success"
+                    },
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    }
+                }
+            },
+            "model.GenericResponse-model_TAIndicatorsResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "$ref": "#/components/schemas/model.TAIndicatorsResponse"
+                    },
+                    "error_code": {
+                        "type": "string",
+                        "example": "FORBIDDEN"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "success"
+                    },
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    }
+                }
+            },
+            "model.GenericResponse-model_TASentimentResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "$ref": "#/components/schemas/model.TASentimentResponse"
+                    },
+                    "error_code": {
+                        "type": "string",
+                        "example": "FORBIDDEN"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "success"
+                    },
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    }
+                }
+            },
+            "model.GenericResponse-model_TenantUsageHistoryAggregatedResponseData": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "$ref": "#/components/schemas/model.TenantUsageHistoryAggregatedResponseData"
+                    },
+                    "error_code": {
+                        "type": "string",
+                        "example": "FORBIDDEN"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "success"
+                    },
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    }
+                }
+            },
+            "model.GenericResponse-model_TenantUsageSummaryResponseData": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "$ref": "#/components/schemas/model.TenantUsageSummaryResponseData"
+                    },
+                    "error_code": {
+                        "type": "string",
+                        "example": "FORBIDDEN"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "success"
+                    },
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    }
+                }
+            },
             "model.GenericResponse-model_UpdateTenantNameResponseData": {
                 "type": "object",
                 "properties": {
@@ -1955,6 +2873,19 @@
                     "success": {
                         "type": "boolean",
                         "example": true
+                    }
+                }
+            },
+            "model.GoogleLoginRequest": {
+                "type": "object",
+                "required": [
+                    "credentials"
+                ],
+                "properties": {
+                    "credentials": {
+                        "type": "string",
+                        "maxLength": 5000,
+                        "minLength": 1
                     }
                 }
             },
@@ -2047,12 +2978,16 @@
                 "enum": [
                     "surf-ask",
                     "surf-research",
-                    "surf-1.5"
+                    "surf-1.5",
+                    "surf-1.5-thinking",
+                    "surf-1.5-instant"
                 ],
                 "x-enum-varnames": [
                     "LLMModelSURFASK",
                     "LLMModelSURFRESEARCH",
-                    "LLMModelSURF15"
+                    "LLMModelSURF15",
+                    "LLMModelSURF15_THINKING",
+                    "LLMModelSURF15_INSTANT"
                 ]
             },
             "model.ListTenantsResponseData": {
@@ -2072,6 +3007,20 @@
                     },
                     "total": {
                         "type": "integer"
+                    }
+                }
+            },
+            "model.LoginResult": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "is_registered": {
+                        "type": "boolean"
+                    },
+                    "refresh_token": {
+                        "type": "string"
                     }
                 }
             },
@@ -2149,6 +3098,95 @@
                     }
                 }
             },
+            "model.ModifyTenantRequest": {
+                "type": "object",
+                "properties": {
+                    "credit_limit": {
+                        "type": "integer"
+                    },
+                    "email": {
+                        "description": "传 null 或空串可清空",
+                        "type": "string"
+                    },
+                    "limit": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "period": {
+                        "type": "integer"
+                    },
+                    "prices": {
+                        "description": "按 arg 覆盖单价，写入 DB 时为 price*10",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/model.CreateTenantPriceItem"
+                        }
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/model.TenantType"
+                    }
+                }
+            },
+            "model.ModifyTenantResponseData": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string"
+                    },
+                    "limit": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "period": {
+                        "type": "integer"
+                    },
+                    "tenant_id": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/model.TenantType"
+                    }
+                }
+            },
+            "model.OtpLoginRequest": {
+                "type": "object",
+                "required": [
+                    "email",
+                    "otp_code",
+                    "otp_id"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "otp_code": {
+                        "type": "string",
+                        "maxLength": 20,
+                        "minLength": 1
+                    },
+                    "otp_id": {
+                        "type": "string",
+                        "maxLength": 200,
+                        "minLength": 1
+                    }
+                }
+            },
+            "model.OverallSentiment": {
+                "type": "object",
+                "properties": {
+                    "label": {
+                        "type": "string"
+                    },
+                    "score": {
+                        "type": "integer"
+                    }
+                }
+            },
             "model.QuestionResponse": {
                 "type": "object",
                 "properties": {
@@ -2181,6 +3219,19 @@
                     "ReasoningEffortHigh"
                 ]
             },
+            "model.RefreshAccessTokenRequest": {
+                "type": "object",
+                "required": [
+                    "refresh_token"
+                ],
+                "properties": {
+                    "refresh_token": {
+                        "type": "string",
+                        "maxLength": 500,
+                        "minLength": 1
+                    }
+                }
+            },
             "model.Role": {
                 "type": "string",
                 "enum": [
@@ -2194,12 +3245,154 @@
                     "RoleSYSTEM"
                 ]
             },
+            "model.SectorGroup": {
+                "type": "object",
+                "properties": {
+                    "description": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                }
+            },
+            "model.SendEmailOtpRequest": {
+                "type": "object",
+                "required": [
+                    "email"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "maxLength": 255
+                    }
+                }
+            },
+            "model.SendEmailOtpResponse": {
+                "type": "object",
+                "properties": {
+                    "otp_id": {
+                        "type": "string"
+                    }
+                }
+            },
+            "model.TAIndicatorChange": {
+                "type": "object",
+                "properties": {
+                    "abs_change": {
+                        "type": "number",
+                        "example": 4.2
+                    },
+                    "old_value": {
+                        "type": "number",
+                        "example": 58.1
+                    },
+                    "pct_change": {
+                        "type": "number",
+                        "example": 7.23
+                    },
+                    "period": {
+                        "type": "string",
+                        "example": "4h"
+                    },
+                    "reference_open_time": {
+                        "type": "string",
+                        "example": "2026-02-09T01:00:00Z"
+                    }
+                }
+            },
+            "model.TAIndicatorValue": {
+                "type": "object",
+                "properties": {
+                    "changes": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/model.TAIndicatorChange"
+                        }
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "rsi_14"
+                    },
+                    "value": {
+                        "type": "number",
+                        "example": 62.3
+                    }
+                }
+            },
+            "model.TAIndicatorsResponse": {
+                "type": "object",
+                "properties": {
+                    "exchange": {
+                        "type": "string",
+                        "example": "BITHUMB"
+                    },
+                    "indicators": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/model.TAIndicatorValue"
+                        }
+                    },
+                    "open_time": {
+                        "type": "string",
+                        "example": "2026-02-09T06:00:00Z"
+                    },
+                    "symbol": {
+                        "type": "string",
+                        "example": "BTC"
+                    }
+                }
+            },
+            "model.TASentimentResponse": {
+                "type": "object",
+                "properties": {
+                    "changes": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/model.TAIndicatorChange"
+                        }
+                    },
+                    "exchange": {
+                        "type": "string",
+                        "example": "BITHUMB"
+                    },
+                    "open_time": {
+                        "type": "string",
+                        "example": "2026-02-09T06:00:00Z"
+                    },
+                    "sentiment": {
+                        "type": "number",
+                        "example": 0.42
+                    },
+                    "symbol": {
+                        "type": "string",
+                        "example": "BTC"
+                    }
+                }
+            },
+            "model.TechnicalIndicator": {
+                "type": "object",
+                "properties": {
+                    "analysis": {
+                        "type": "string"
+                    },
+                    "indicator_status": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                }
+            },
             "model.TenantAdminView": {
                 "type": "object",
                 "properties": {
                     "credit": {
                         "description": "Credit 当前可用额度（余额）",
                         "type": "number"
+                    },
+                    "email": {
+                        "type": "string"
                     },
                     "limit": {
                         "type": "integer"
@@ -2240,6 +3433,73 @@
                     "TenantTypePRO",
                     "TenantTypeGROWTH"
                 ]
+            },
+            "model.TenantUsageHistoryAggregatedItem": {
+                "type": "object",
+                "properties": {
+                    "amount_sum": {
+                        "description": "amount 总和（与 credit 同单位时已除以 10）",
+                        "type": "number"
+                    },
+                    "arg": {
+                        "type": "string"
+                    },
+                    "tenant_id": {
+                        "type": "string"
+                    },
+                    "url": {
+                        "type": "string"
+                    }
+                }
+            },
+            "model.TenantUsageHistoryAggregatedResponseData": {
+                "type": "object",
+                "properties": {
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/model.TenantUsageHistoryAggregatedItem"
+                        }
+                    }
+                }
+            },
+            "model.TenantUsageSummaryItem": {
+                "type": "object",
+                "properties": {
+                    "amount_sum": {
+                        "description": "amount 总和（与 credit 同单位时已除以 10）",
+                        "type": "number"
+                    },
+                    "arg": {
+                        "type": "string"
+                    },
+                    "url": {
+                        "type": "string"
+                    }
+                }
+            },
+            "model.TenantUsageSummaryResponseData": {
+                "type": "object",
+                "properties": {
+                    "credit_limit": {
+                        "description": "租户 credit_limit / 10",
+                        "type": "number"
+                    },
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/model.TenantUsageSummaryItem"
+                        }
+                    },
+                    "type": {
+                        "description": "租户类型",
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/model.TenantType"
+                            }
+                        ]
+                    }
+                }
             },
             "model.TokenNewsItem": {
                 "type": "object",
