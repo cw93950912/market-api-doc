@@ -1352,17 +1352,12 @@
                         }
                     },
                     {
-                        "description": "Ticker (required)",
+                        "description": "Ticker (required). e.g. BTC, ETH, MON",
                         "name": "ticker",
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "BTC",
-                                "ETH",
-                                "MON"
-                            ]
+                            "type": "string"
                         }
                     }
                 ],
