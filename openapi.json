@@ -1866,6 +1866,83 @@
                 }
             }
         },
+        "/v1/market/token-metrics": {
+            "get": {
+                "security": [
+                    {
+                        "AccessToken": []
+                    }
+                ],
+                "description": "Returns one coalesced metric series for a Bithumb symbol. Preferred order is Token Terminal active_addresses_daily -> transaction_count -> tokenholders -> transaction_volume, and falls back to CoinGecko turnover_rate.",
+                "tags": [
+                    "Market"
+                ],
+                "summary": "Token Metrics",
+                "parameters": [
+                    {
+                        "description": "Bithumb symbol (e.g. BTC, ETH)",
+                        "name": "symbol",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.GenericResponse-model_TokenTerminalMetricsResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    },
+                    "502": {
+                        "description": "Bad Gateway",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/model.BaseResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/v1/market/trends": {
             "get": {
                 "security": [
@@ -2851,6 +2928,26 @@
                     }
                 }
             },
+            "model.GenericResponse-model_TokenTerminalMetricsResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "$ref": "#/components/schemas/model.TokenTerminalMetricsResponse"
+                    },
+                    "error_code": {
+                        "type": "string",
+                        "example": "FORBIDDEN"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "success"
+                    },
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    }
+                }
+            },
             "model.GenericResponse-model_UpdateTenantNameResponseData": {
                 "type": "object",
                 "properties": {
@@ -3509,6 +3606,37 @@
                         "type": "string"
                     },
                     "title": {
+                        "type": "string"
+                    }
+                }
+            },
+            "model.TokenTerminalMetricPoint": {
+                "type": "object",
+                "properties": {
+                    "chain": {
+                        "type": "string"
+                    },
+                    "metric_id": {
+                        "type": "string"
+                    },
+                    "timestamp": {
+                        "type": "string"
+                    },
+                    "value": {
+                        "type": "number"
+                    }
+                }
+            },
+            "model.TokenTerminalMetricsResponse": {
+                "type": "object",
+                "properties": {
+                    "metrics": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/model.TokenTerminalMetricPoint"
+                        }
+                    },
+                    "symbol": {
                         "type": "string"
                     }
                 }
