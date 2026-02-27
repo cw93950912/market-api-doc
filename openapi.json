@@ -1240,14 +1240,14 @@
                         "AccessToken": []
                     }
                 ],
-                "description": "The AI Recommended Prompts API generates context-aware analytical questions and structured responses for the Bithumb KRW crypto market, helping users quickly understand current market conditions, asset movements, capital flows, and emerging narratives.\nThe API covers both fixed core questions (e.g. market sentiment, strongest momentum assets, trending issues) and dynamically selected questions from a predefined pool, which may change over time. Each prompt produces a structured output consisting of a concise summary, detailed analysis, and a neutral conclusion.",
+                "description": "Returns structured AI analysis from the bithumb_reports table for the given signal type.",
                 "tags": [
                     "Market"
                 ],
                 "summary": "AI Recommended Prompts",
                 "parameters": [
                     {
-                        "description": "Date in YYYY-MM-DD format. If date is not provided, returns the most recent data",
+                        "description": "Date in YYYY-MM-DD format. If not provided, returns the most recent data",
                         "name": "date",
                         "in": "query",
                         "schema": {
@@ -1255,33 +1255,29 @@
                         }
                     },
                     {
-                        "description": "Prompt type (template key)",
+                        "description": "Signal type",
                         "name": "type",
                         "in": "query",
                         "required": true,
                         "schema": {
                             "type": "string",
                             "enum": [
-                                "krw_market_sentiment",
-                                "strongest_momentum",
+                                "undervalued_asset",
+                                "sector_leaders",
+                                "bullish_assets",
+                                "stablecoin_inflows",
+                                "asset_price_surge",
+                                "kol_sectors",
+                                "asset_price_decline",
+                                "positive_news_top5",
+                                "sentiment_divergence",
+                                "kol_themes",
                                 "trending_issues",
-                                "go_up",
-                                "go_down",
-                                "kols_discuss",
-                                "kols_sectors"
-                            ]
-                        }
-                    },
-                    {
-                        "description": "Ticker (required when type is go_up or go_down)",
-                        "name": "ticker",
-                        "in": "query",
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "BTC",
-                                "ETH",
-                                "MON"
+                                "golden_cross",
+                                "exchange_outflows",
+                                "top_active_chain",
+                                "hottest_meme_coins",
+                                "btc_etf_flow"
                             ]
                         }
                     }
@@ -1292,7 +1288,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/model.GenericResponse-model_QuestionResponse"
+                                    "$ref": "#/components/schemas/model.BaseResponse"
                                 }
                             }
                         }
@@ -1352,7 +1348,7 @@
                         }
                     },
                     {
-                        "description": "Ticker (required). e.g. BTC, ETH, MON",
+                        "description": "Ticker (required)",
                         "name": "ticker",
                         "in": "query",
                         "required": true,
@@ -2788,26 +2784,6 @@
                     }
                 }
             },
-            "model.GenericResponse-model_QuestionResponse": {
-                "type": "object",
-                "properties": {
-                    "data": {
-                        "$ref": "#/components/schemas/model.QuestionResponse"
-                    },
-                    "error_code": {
-                        "type": "string",
-                        "example": "FORBIDDEN"
-                    },
-                    "message": {
-                        "type": "string",
-                        "example": "success"
-                    },
-                    "success": {
-                        "type": "boolean",
-                        "example": true
-                    }
-                }
-            },
             "model.GenericResponse-model_QuestionsResponse": {
                 "type": "object",
                 "properties": {
@@ -3279,14 +3255,6 @@
                     }
                 }
             },
-            "model.QuestionResponse": {
-                "type": "object",
-                "properties": {
-                    "content": {
-                        "type": "string"
-                    }
-                }
-            },
             "model.QuestionsResponse": {
                 "type": "object",
                 "properties": {
@@ -3481,6 +3449,10 @@
                 "properties": {
                     "credit": {
                         "description": "Credit 当前可用额度（余额）",
+                        "type": "number"
+                    },
+                    "credit_limit": {
+                        "description": "CreditLimit 额度上限（展示值 = 存库值/10）",
                         "type": "number"
                     },
                     "email": {
