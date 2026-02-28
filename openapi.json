@@ -1277,8 +1277,17 @@
                                 "exchange_outflows",
                                 "top_active_chain",
                                 "hottest_meme_coins",
-                                "btc_etf_flow"
+                                "btc_etf_flow",
+                                "market_sentiment"
                             ]
+                        }
+                    },
+                    {
+                        "description": "Ticker (required when type is asset_price_surge or asset_price_decline)",
+                        "name": "ticker",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
                         }
                     }
                 ],
@@ -1353,7 +1362,12 @@
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "enum": [
+                                "BTC",
+                                "ETH",
+                                "MON"
+                            ]
                         }
                     }
                 ],

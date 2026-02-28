@@ -38,6 +38,7 @@ openapi: openapi.json GET /v1/market/ai-recommended-prompts
   <li><code>btc_etf_flow</code>: BTC ETF flows</li>
   <li><code>kol_sectors</code>: KOL sector discussions</li>
   <li><code>kol_themes</code>: KOL theme narratives</li>
+  <li><code>market_sentiment</code>: market sentiment</li>
 </ul>
 
 <h3 style={{ marginTop: 20 }}>How to use</h3>
@@ -45,6 +46,10 @@ openapi: openapi.json GET /v1/market/ai-recommended-prompts
 <Steps>
   <Step title="Choose a type">
     Set <code>type</code> (required) as the signal type. Different types produce different structured outputs.
+  </Step>
+
+  <Step title="Ticker when needed">
+    When <code>type</code> is <code>asset_price_surge</code> or <code>asset_price_decline</code>, provide <code>ticker</code> (required for that type).
   </Step>
 
   <Step title="Optional: choose a date">
