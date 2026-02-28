@@ -21,24 +21,28 @@ openapi: openapi.json GET /v1/market/ai-recommended-prompts
 
 <h3 style={{ marginTop: 20 }}>Available types</h3>
 
-<ul style={{ fontSize: 15, lineHeight: 1.8 }}>
-  <li><code>undervalued_asset</code>: potentially undervalued assets</li>
-  <li><code>sector_leaders</code>: leading sectors / sector leaders</li>
-  <li><code>bullish_assets</code>: bullish assets</li>
-  <li><code>stablecoin_inflows</code>: stablecoin inflows</li>
-  <li><code>asset_price_surge</code>: notable price surges</li>
-  <li><code>asset_price_decline</code>: notable price declines</li>
-  <li><code>positive_news_top5</code>: top positive news</li>
-  <li><code>sentiment_divergence</code>: sentiment divergence signals</li>
-  <li><code>trending_issues</code>: trending market issues</li>
-  <li><code>golden_cross</code>: golden-cross technical signals</li>
-  <li><code>exchange_outflows</code>: exchange outflows</li>
-  <li><code>top_active_chain</code>: most active chains</li>
-  <li><code>hottest_meme_coins</code>: hottest meme coins</li>
-  <li><code>btc_etf_flow</code>: BTC ETF flows</li>
-  <li><code>kol_sectors</code>: KOL sector discussions</li>
-  <li><code>kol_themes</code>: KOL theme narratives</li>
-  <li><code>market_sentiment</code>: market sentiment</li>
+<p style={{ fontSize: 15, lineHeight: 1.8, marginBottom: 12 }}>
+  Below are the suggested questions for each <code>type</code>:
+</p>
+
+<ul style={{ fontSize: 15, lineHeight: 1.8, listStyle: "none", paddingLeft: 0 }}>
+  <li style={{ marginBottom: 12 }}><code>market_sentiment</code><br />English: Why is the market rising or falling?<br />Korean: 현재 시장의 상승/하락 이유는?</li>
+  <li style={{ marginBottom: 12 }}><code>bullish_assets</code><br />English: Which assets are on the rise?<br />Korean: 상승추세를 보이는 자산은?</li>
+  <li style={{ marginBottom: 12 }}><code>trending_issues</code><br />English: What are the trending issues in the crypto market?<br />Korean: 지금 시장에서 주목받는 이슈는?</li>
+  <li style={{ marginBottom: 12 }}><code>asset_price_surge</code><br />English: Why did the price of &#123;Asset Name&#125; go up?<br />Korean: &#123;가상자산명&#125; 상승 이유는?</li>
+  <li style={{ marginBottom: 12 }}><code>asset_price_decline</code><br />English: Why did the price of &#123;Asset Name&#125; go down?<br />Korean: &#123;가상자산명&#125; 하락 이유는?</li>
+  <li style={{ marginBottom: 12 }}><code>kol_themes</code><br />English: What themes are KOLs discussing recently?<br />Korean: 최근 KOL들의 주요 관심 주제는?</li>
+  <li style={{ marginBottom: 12 }}><code>kol_sectors</code><br />English: Which sectors are KOLs paying attention to?<br />Korean: 최근 KOL들이 주목하는 섹터는?</li>
+  <li style={{ marginBottom: 12 }}><code>positive_news_top5</code><br />English: What are the top 5 assets with positive news sentiment?<br />Korean: 뉴스 긍정 Top5 자산은?</li>
+  <li style={{ marginBottom: 12 }}><code>hottest_meme_coins</code><br />English: What is the hottest meme coin today?<br />Korean: 오늘 가장 핫한 &apos;밈코인&apos; 은?</li>
+  <li style={{ marginBottom: 12 }}><code>exchange_outflows</code><br />English: Which assets are experiencing large exchange outflows?<br />Korean: 거래소 대량 출금 자산은?</li>
+  <li style={{ marginBottom: 12 }}><code>stablecoin_inflows</code><br />English: What are the stablecoin inflow trends?<br />Korean: 스테이블코인 유입량은?</li>
+  <li style={{ marginBottom: 12 }}><code>sector_leaders</code><br />English: What are the leading assets by sector today?<br />Korean: 오늘 섹터별 대장 종목은?</li>
+  <li style={{ marginBottom: 12 }}><code>btc_etf_flow</code><br />English: What are the latest Bitcoin ETF inflows and outflows?<br />Korean: 비트코인 ETF 유출입 현황은?</li>
+  <li style={{ marginBottom: 12 }}><code>golden_cross</code><br />English: Which assets are approaching a golden cross?<br />Korean: 골든크로스 임박 자산은?</li>
+  <li style={{ marginBottom: 12 }}><code>sentiment_divergence</code><br />English: Which assets show sentiment divergence?<br />Korean: 심리 괴리 현상이 나타나는 자산은?</li>
+  <li style={{ marginBottom: 12 }}><code>top_active_chain</code><br />English: Which blockchain has the highest active users?<br />Korean: 활성 사용자 1위 체인은?</li>
+  <li style={{ marginBottom: 12 }}><code>undervalued_asset</code><br />English: Which asset appears undervalued in the &#123;sector&#125;?<br />Korean: &#123;sector&#125;에서 저평가된 자산은?</li>
 </ul>
 
 <h3 style={{ marginTop: 20 }}>How to use</h3>
