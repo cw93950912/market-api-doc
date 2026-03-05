@@ -2027,7 +2027,7 @@
     },
     "servers": [
         {
-            "url": "/surf-ai"
+            "url": "https://api.asksurf.ai/surf-ai"
         }
     ],
     "components": {
