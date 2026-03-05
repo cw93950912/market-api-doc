@@ -26,7 +26,7 @@ openapi: openapi.json GET /v1/market/ai-recommended-assets
     <code>overall_rank</code>, and <code>ranking_by_category</code>.
   </li>
   <li>
-    <strong>summary</strong>: asset info + <code>summary</code> (AI-generated one-liner).
+    <strong>summary</strong>: asset info + <code>summary</code> (concise Korean one-liner, max 20 characters).
   </li>
   <li>
     <strong>comprehensive_evaluation</strong>: asset info + <code>total_score</code>, <code>score_by_category</code>,
@@ -45,15 +45,16 @@ openapi: openapi.json GET /v1/market/ai-recommended-assets
 
 <div style={{ fontSize: 15, lineHeight: 1.8 }}>
   <p style={{ marginBottom: 8 }}>
-    Total Score is derived from five categories (each 0-10):
+    Total Score is provided together with six category scores (each 0-10):
   </p>
 
   <ul>
-    <li><strong>Market Sentiment</strong></li>
-    <li><strong>Price Stability</strong></li>
-    <li><strong>Search Trend</strong></li>
-    <li><strong>Trading Activity</strong></li>
     <li><strong>Upside Energy</strong></li>
+    <li><strong>Trading Activity</strong></li>
+    <li><strong>Search Trend</strong></li>
+    <li><strong>Price Stability</strong></li>
+    <li><strong>Market Sentiment</strong></li>
+    <li><strong>Price Resilience</strong></li>
   </ul>
 
   <p style={{ marginTop: 10 }}>
