@@ -42,8 +42,9 @@
                 }
             },
             {
-                "group": "Token Metrics",
+                "group": "AI Report",
                 "pages": [
+                    "ai-report",
                     "token-metrics"
                 ],
                 "api": {
@@ -65,8 +66,27 @@
             {
                 "group": "Other APIs",
                 "pages": [
-                    "ai-report",
-                    "ai-recommended-prompts",
+                    "ai-recommended-prompts"
+                ],
+                "api": {
+                    "playground": {
+                        "display": "interactive",
+                        "validation": {
+                            "enabled": true
+                        }
+                    },
+                    "examples": {
+                        "languages": [
+                            "curl",
+                            "python",
+                            "javascript"
+                        ]
+                    }
+                }
+            },
+            {
+                "group": "AI Recommendation",
+                "pages": [
                     "ai-recommended-assets",
                     "ai-buy-recommendation",
                     "ai-sell-recommendation"
