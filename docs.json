@@ -43,7 +43,9 @@
                 "pages": [
                     "ai-report",
                     "ai-recommended-prompts",
-                    "ai-recommended-assets"
+                    "ai-recommended-assets",
+                    "ai-recommended-assets-top50",
+                    "ai-recommended-assets-bottom50"
                 ],
                 "api": {
                     "playground": {
