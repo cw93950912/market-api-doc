@@ -1170,7 +1170,7 @@
             "AccessToken": []
           }
         ],
-        "description": "The AI Asset Recommendation API provides a data-driven ranking and evaluation of crypto assets listed in the Bithumb KRW market, combining real-time market data with multi-dimensional scoring and AI-generated interpretation.\nThe API consists of two core components:\n1. AI Recommendation List\nDelivers a ranked list of eligible assets based on a composite Total Score (0–10), calculated as the rounded average of five individual category scores.\n2. AI Recommendation Details\nProvides an in-depth evaluation for a selected asset, including real-time price information, overall recommendation summary, detailed score interpretation, category breakdowns, price change visualization, and social sentiment distribution.\nIf certain data is unavailable or not applicable, corresponding fields will return null or be omitted.",
+        "description": "Returns top-200 tokens by market cap with AI scoring and ranking.\nIf tickers param is provided, returns only those tickers (intersected with top-200).",
         "tags": [
           "Market"
         ],
@@ -1200,10 +1200,9 @@
             }
           },
           {
-            "description": "Tickers (comma separated, required. support BTC,ETH,SOL. e.g BTC,ETH)",
+            "description": "Tickers (comma separated, optional. e.g BTC,ETH). If omitted, returns all top-200 tokens by market cap",
             "name": "tickers",
             "in": "query",
-            "required": true,
             "schema": {
               "type": "string"
             }
@@ -1350,7 +1349,7 @@
             "AccessToken": []
           }
         ],
-        "description": "AI Report API generates a structured research report for crypto assets, combining real-time market snapshots, trend summaries, technical analysis, sector-optimized on-chain metrics, and community sentiment insights.\nThe report is generated as a point-in-time snapshot and is designed to be beginner-friendly and neutral, presenting both bullish and bearish factors without providing financial advice.\nOn-chain indicators are dynamically selected based on the asset’s sector classification using a three-layer metric framework (common, shared, and sector-specific).\nIf certain data is unavailable or not applicable, corresponding fields will return null or be omitted.",
+        "description": "AI Report API generates a structured research report for crypto assets, combining real-time market snapshots, trend summaries, technical analysis, sector-optimized on-chain metrics, and community sentiment insights.\nThe report is generated as a point-in-time snapshot and is designed to be beginner-friendly and neutral, presenting both bullish and bearish factors without providing financial advice.\nOn-chain indicators are dynamically selected based on the asset\u2019s sector classification using a three-layer metric framework (common, shared, and sector-specific).\nIf certain data is unavailable or not applicable, corresponding fields will return null or be omitted.",
         "tags": [
           "Market"
         ],
@@ -1365,10 +1364,9 @@
             }
           },
           {
-            "description": "Ticker (required)",
+            "description": "Ticker (optional). If omitted, returns reports for all top-200 tokens by market cap",
             "name": "ticker",
             "in": "query",
-            "required": true,
             "schema": {
               "type": "string"
             }
@@ -1376,11 +1374,11 @@
         ],
         "responses": {
           "200": {
-            "description": "Returns AI report on success",
+            "description": "Returns AI reports on success (all top-200)",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/model.GenericResponse-model_ComprehensiveReportResponse"
+                  "$ref": "#/components/schemas/model.GenericResponse-model_AIReportListResponse"
                 }
               }
             }
@@ -2031,6 +2029,144 @@
           }
         }
       }
+    },
+    "/v1/market/ai-recommended-assets-top50": {
+      "get": {
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "description": "Returns top-50 tokens by market cap with AI scoring and ranking.",
+        "tags": [
+          "Market"
+        ],
+        "summary": "AI Recommended Assets (Top 50)",
+        "parameters": [
+          {
+            "description": "Date in YYYY-MM-DD format",
+            "name": "date",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Prompt type (template key)",
+            "name": "type",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "score_ranking",
+                "summary",
+                "comprehensive_evaluation",
+                "sentiment_trend"
+              ]
+            }
+          },
+          {
+            "description": "Tickers (comma separated, optional)",
+            "name": "tickers",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns AI recommended assets on success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/model.GenericResponse-model_AIRecommendedAssetsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "When request parameters are invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/model.BaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/market/ai-recommended-assets-bottom50": {
+      "get": {
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "description": "Returns tokens ranked 151\u2013200 by market cap with AI scoring and ranking.",
+        "tags": [
+          "Market"
+        ],
+        "summary": "AI Recommended Assets (Rank 151\u2013200)",
+        "parameters": [
+          {
+            "description": "Date in YYYY-MM-DD format",
+            "name": "date",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Prompt type (template key)",
+            "name": "type",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "score_ranking",
+                "summary",
+                "comprehensive_evaluation",
+                "sentiment_trend"
+              ]
+            }
+          },
+          {
+            "description": "Tickers (comma separated, optional)",
+            "name": "tickers",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns AI recommended assets on success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/model.GenericResponse-model_AIRecommendedAssetsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "When request parameters are invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/model.BaseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "servers": [
@@ -2223,7 +2359,7 @@
         "type": "object",
         "properties": {
           "finish_reason": {
-            "description": "Indicates why the model stopped generating. Common values:\n- stop — normal completion\n- length — hit max token limit\n- tool_calls — model invoked a tool\n- content_filter — blocked by safety filters\n- error — unexpected interruption",
+            "description": "Indicates why the model stopped generating. Common values:\n- stop \u2014 normal completion\n- length \u2014 hit max token limit\n- tool_calls \u2014 model invoked a tool\n- content_filter \u2014 blocked by safety filters\n- error \u2014 unexpected interruption",
             "type": "string",
             "example": "stop"
           },
@@ -2297,6 +2433,13 @@
           "ability": {
             "type": "array",
             "items": {
+              "enum": [
+                "search",
+                "evm_onchain",
+                "solana_onchain",
+                "market_analysis",
+                "calculate"
+              ],
               "$ref": "#/components/schemas/model.Ability"
             },
             "example": [
@@ -2308,6 +2451,10 @@
           "citation": {
             "type": "array",
             "items": {
+              "enum": [
+                "source",
+                "chart"
+              ],
               "$ref": "#/components/schemas/model.Citation"
             },
             "example": [
@@ -2532,7 +2679,7 @@
             "type": "integer"
           },
           "email": {
-            "description": "用于 Google/OTP 登录，唯一索引，可为空",
+            "description": "\u7528\u4e8e Google/OTP \u767b\u5f55\uff0c\u552f\u4e00\u7d22\u5f15\uff0c\u53ef\u4e3a\u7a7a",
             "type": "string"
           },
           "limit": {
@@ -2545,14 +2692,14 @@
             "type": "integer"
           },
           "prices": {
-            "description": "可选，按 arg 覆盖默认单价，写入 DB 时为 price*10",
+            "description": "\u53ef\u9009\uff0c\u6309 arg \u8986\u76d6\u9ed8\u8ba4\u5355\u4ef7\uff0c\u5199\u5165 DB \u65f6\u4e3a price*10",
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/model.CreateTenantPriceItem"
             }
           },
           "type": {
-            "description": "默认建议使用 API",
+            "description": "\u9ed8\u8ba4\u5efa\u8bae\u4f7f\u7528 API",
             "allOf": [
               {
                 "$ref": "#/components/schemas/model.TenantType"
@@ -2986,6 +3133,13 @@
           "ability": {
             "type": "array",
             "items": {
+              "enum": [
+                "search",
+                "evm_onchain",
+                "solana_onchain",
+                "market_analysis",
+                "calculate"
+              ],
               "$ref": "#/components/schemas/model.Ability"
             },
             "example": [
@@ -2997,6 +3151,10 @@
           "citation": {
             "type": "array",
             "items": {
+              "enum": [
+                "source",
+                "chart"
+              ],
               "$ref": "#/components/schemas/model.Citation"
             },
             "example": [
@@ -3208,7 +3366,7 @@
             "example": "Summarize today's Bitcoin market."
           },
           "role": {
-            "description": "The role of the message. The source of the message. Include:\n- system — system instructions\n- user — user input\n- assistant — model output\n- tool — tool responses",
+            "description": "The role of the message. The source of the message. Include:\n- system \u2014 system instructions\n- user \u2014 user input\n- assistant \u2014 model output\n- tool \u2014 tool responses",
             "allOf": [
               {
                 "$ref": "#/components/schemas/model.Role"
@@ -3225,7 +3383,7 @@
             "type": "integer"
           },
           "email": {
-            "description": "传 null 或空串可清空",
+            "description": "\u4f20 null \u6216\u7a7a\u4e32\u53ef\u6e05\u7a7a",
             "type": "string"
           },
           "limit": {
@@ -3238,7 +3396,7 @@
             "type": "integer"
           },
           "prices": {
-            "description": "按 arg 覆盖单价，写入 DB 时为 price*10",
+            "description": "\u6309 arg \u8986\u76d6\u5355\u4ef7\uff0c\u5199\u5165 DB \u65f6\u4e3a price*10",
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/model.CreateTenantPriceItem"
@@ -3500,11 +3658,11 @@
         "type": "object",
         "properties": {
           "credit": {
-            "description": "Credit 当前可用额度（余额）",
+            "description": "Credit \u5f53\u524d\u53ef\u7528\u989d\u5ea6\uff08\u4f59\u989d\uff09",
             "type": "number"
           },
           "credit_limit": {
-            "description": "CreditLimit 额度上限（展示值 = 存库值/10）",
+            "description": "CreditLimit \u989d\u5ea6\u4e0a\u9650\uff08\u5c55\u793a\u503c = \u5b58\u5e93\u503c/10\uff09",
             "type": "number"
           },
           "email": {
@@ -3526,7 +3684,7 @@
             "$ref": "#/components/schemas/model.TenantType"
           },
           "usage": {
-            "description": "Usage 累计使用额度（累计消费）",
+            "description": "Usage \u7d2f\u8ba1\u4f7f\u7528\u989d\u5ea6\uff08\u7d2f\u8ba1\u6d88\u8d39\uff09",
             "type": "number"
           }
         }
@@ -3554,7 +3712,7 @@
         "type": "object",
         "properties": {
           "amount_sum": {
-            "description": "amount 总和（与 credit 同单位时已除以 10）",
+            "description": "amount \u603b\u548c\uff08\u4e0e credit \u540c\u5355\u4f4d\u65f6\u5df2\u9664\u4ee5 10\uff09",
             "type": "number"
           },
           "arg": {
@@ -3583,7 +3741,7 @@
         "type": "object",
         "properties": {
           "amount_sum": {
-            "description": "amount 总和（与 credit 同单位时已除以 10）",
+            "description": "amount \u603b\u548c\uff08\u4e0e credit \u540c\u5355\u4f4d\u65f6\u5df2\u9664\u4ee5 10\uff09",
             "type": "number"
           },
           "arg": {
@@ -3598,7 +3756,7 @@
         "type": "object",
         "properties": {
           "credit_limit": {
-            "description": "租户 credit_limit / 10",
+            "description": "\u79df\u6237 credit_limit / 10",
             "type": "number"
           },
           "items": {
@@ -3608,7 +3766,7 @@
             }
           },
           "type": {
-            "description": "租户类型",
+            "description": "\u79df\u6237\u7c7b\u578b",
             "allOf": [
               {
                 "$ref": "#/components/schemas/model.TenantType"
@@ -3741,6 +3899,140 @@
           "status": {
             "type": "string",
             "example": "ok"
+          }
+        }
+      },
+      "model.AIReportItem": {
+        "type": "object",
+        "properties": {
+          "bithumb_rank": {
+            "type": "integer"
+          },
+          "community": {
+            "$ref": "#/components/schemas/model.ComprehensiveReportCommunity"
+          },
+          "conclusion": {
+            "$ref": "#/components/schemas/model.ComprehensiveReportConclusion"
+          },
+          "onchain": {
+            "$ref": "#/components/schemas/model.ComprehensiveReportOnchain"
+          },
+          "summary": {
+            "$ref": "#/components/schemas/model.ComprehensiveReportSummary"
+          },
+          "technical": {
+            "$ref": "#/components/schemas/model.ComprehensiveReportTechnical"
+          },
+          "ticker": {
+            "type": "string"
+          },
+          "title": {
+            "$ref": "#/components/schemas/model.ComprehensiveReportTitle"
+          }
+        }
+      },
+      "model.AIReportListResponse": {
+        "type": "object",
+        "properties": {
+          "reports": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/model.AIReportItem"
+            }
+          }
+        }
+      },
+      "model.ClaimEnterpriseKeyResponse": {
+        "type": "object",
+        "properties": {
+          "api_key": {
+            "type": "string"
+          },
+          "credit_limit": {
+            "type": "integer"
+          },
+          "tenant_id": {
+            "type": "string"
+          }
+        }
+      },
+      "model.EnterpriseKeyInfoResponse": {
+        "type": "object",
+        "properties": {
+          "active": {
+            "type": "boolean"
+          },
+          "created_at": {
+            "type": "integer"
+          },
+          "credit_limit": {
+            "type": "integer"
+          },
+          "key_prefix": {
+            "type": "string"
+          },
+          "tenant_id": {
+            "type": "string"
+          }
+        }
+      },
+      "model.GenericResponse-model_AIReportListResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/model.AIReportListResponse"
+          },
+          "error_code": {
+            "type": "string",
+            "example": "FORBIDDEN"
+          },
+          "message": {
+            "type": "string",
+            "example": "success"
+          },
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      },
+      "model.GenericResponse-model_ClaimEnterpriseKeyResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/model.ClaimEnterpriseKeyResponse"
+          },
+          "error_code": {
+            "type": "string",
+            "example": "FORBIDDEN"
+          },
+          "message": {
+            "type": "string",
+            "example": "success"
+          },
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      },
+      "model.GenericResponse-model_EnterpriseKeyInfoResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/model.EnterpriseKeyInfoResponse"
+          },
+          "error_code": {
+            "type": "string",
+            "example": "FORBIDDEN"
+          },
+          "message": {
+            "type": "string",
+            "example": "success"
+          },
+          "success": {
+            "type": "boolean",
+            "example": true
           }
         }
       }
