@@ -1,6 +1,6 @@
 ---
 title: AI Recommended Assets
-description: Data-driven ranking + AI interpretation for Bithumb KRW market assets.
+description: Data-driven ranking + AI interpretation for top-200 Bithumb KRW market assets.
 openapi: openapi.json GET /v1/market/ai-recommended-assets
 ---
 
@@ -10,13 +10,25 @@ openapi: openapi.json GET /v1/market/ai-recommended-assets
 
 <p style={{ fontSize: 15, lineHeight: 1.8 }}>
   The <strong>AI Asset Recommendation</strong> API delivers ranked insights for crypto assets listed in the
-  <strong>Bithumb KRW</strong> market. It combines multi-dimensional scoring with AI-generated interpretation.
+  <strong>Bithumb KRW</strong> market. It returns the <strong>top 200 tokens by market cap</strong> by default,
+  combining multi-dimensional scoring with AI-generated interpretation.
   The response shape depends on the <code>type</code> you request.
 </p>
 
 <Note>
-  This endpoint returns a point-in-time snapshot. If date is omitted, the most recent snapshot is returned.
+  This endpoint returns a point-in-time snapshot. If <code>date</code> is omitted, the most recent snapshot is returned.
 </Note>
+
+<h3 style={{ marginTop: 20 }}>Variants</h3>
+
+<p style={{ fontSize: 15, lineHeight: 1.8 }}>
+  Two additional endpoints return subsets of the same data:
+</p>
+
+<ul style={{ fontSize: 15, lineHeight: 1.8 }}>
+  <li><code>/v1/market/ai-recommended-assets-top50</code> — top 50 by market cap (rank 1–50)</li>
+  <li><code>/v1/market/ai-recommended-assets-bottom50</code> — bottom 50 of top 200 (rank 151–200)</li>
+</ul>
 
 <h3 style={{ marginTop: 20 }}>Response modes (type)</h3>
 
@@ -37,10 +49,6 @@ openapi: openapi.json GET /v1/market/ai-recommended-assets
   </li>
 </ul>
 
-<p style={{ fontSize: 15, lineHeight: 1.8 }}>
-  Each asset item always includes <code>id</code> and asset fields: <code>symbol</code>, <code>name</code>, <code>image_url</code>.
-</p>
-
 <h3 style={{ marginTop: 20 }}>Scoring model</h3>
 
 <div style={{ fontSize: 15, lineHeight: 1.8 }}>
@@ -56,18 +64,18 @@ openapi: openapi.json GET /v1/market/ai-recommended-assets
     <li><strong>Market Sentiment</strong></li>
     <li><strong>Price Resilience</strong></li>
   </ul>
-
-  <p style={{ marginTop: 10 }}>
-    The response includes <code>score_by_category</code> and, for comprehensive evaluations,
-    <code>interpretation</code> labels per category.
-  </p>
 </div>
 
 <h3 style={{ marginTop: 20 }}>How to use</h3>
 
 <Steps>
-  <Step title="Provide tickers">
-    Pass <code>tickers</code> as a comma-separated list (required). Example: <code>BTC,ETH,SOL</code>.
+  <Step title="Call without tickers (default)">
+    Omit <code>tickers</code> to receive data for <strong>all top-200 tokens</strong> sorted by score.
+  </Step>
+
+  <Step title="Or filter by specific tickers">
+    Pass <code>tickers</code> as a comma-separated list (e.g. <code>BTC,ETH,SOL</code>).
+    Only tokens within the market cap range of this endpoint are returned.
   </Step>
 
   <Step title="Choose a response type">
@@ -76,18 +84,12 @@ openapi: openapi.json GET /v1/market/ai-recommended-assets
   </Step>
 
   <Step title="Optional: request a historical snapshot">
-    Provide <code>date</code> (YYYY-MM-DD). The backend treats it as KST 00:00 for that day and returns
-    the most recent data if omitted.
-  </Step>
-
-  <Step title="Read the snapshot">
-    The response includes <code>generated_at</code> (KST) and an <code>assets</code> list for the tickers that exist in
-    the backend dataset.
+    Provide <code>date</code> (YYYY-MM-DD). The backend treats it as KST 00:00 for that day.
   </Step>
 </Steps>
 
 <Warning>
-  Unknown tickers are omitted. If certain data is unavailable or not applicable, corresponding fields may be
+  Unknown or out-of-range tickers are omitted. If certain data is unavailable, corresponding fields may be
   <code>null</code> or omitted.
 </Warning>
 
