@@ -2030,45 +2030,22 @@
         }
       }
     },
-    "/v1/market/ai-recommended-assets-top50": {
+    "/v1/market/ai-buy-recommendation": {
       "get": {
         "security": [
           {
             "AccessToken": []
           }
         ],
-        "description": "Returns top-50 tokens by market cap with AI scoring and ranking.",
+        "description": "Returns tokens with overall score >= 6.0 from the top-200 by market cap, ranked highest-first.\nOverall score = Round(Average(6 individual metric scores), 1).\nEach item includes: rank, asset info, overall score, 6 category scores, and a Korean summary (max 20 chars).",
         "tags": [
           "Market"
         ],
-        "summary": "AI Recommended Assets (Top 50)",
+        "summary": "Buy Recommendation Ranking",
         "parameters": [
           {
-            "description": "Date in YYYY-MM-DD format",
+            "description": "Date in YYYY-MM-DD format. If omitted, returns the most recent data",
             "name": "date",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "description": "Prompt type (template key)",
-            "name": "type",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "enum": [
-                "score_ranking",
-                "summary",
-                "comprehensive_evaluation",
-                "sentiment_trend"
-              ]
-            }
-          },
-          {
-            "description": "Tickers (comma separated, optional)",
-            "name": "tickers",
             "in": "query",
             "schema": {
               "type": "string"
@@ -2077,17 +2054,27 @@
         ],
         "responses": {
           "200": {
-            "description": "Returns AI recommended assets on success",
+            "description": "Returns buy recommendations on success",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/model.GenericResponse-model_AIRecommendedAssetsResponse"
+                  "$ref": "#/components/schemas/model.GenericResponse-model_RecommendationResponse"
                 }
               }
             }
           },
-          "400": {
-            "description": "When request parameters are invalid",
+          "404": {
+            "description": "When no data found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/model.BaseResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
             "content": {
               "application/json": {
                 "schema": {
@@ -2099,45 +2086,22 @@
         }
       }
     },
-    "/v1/market/ai-recommended-assets-bottom50": {
+    "/v1/market/ai-sell-recommendation": {
       "get": {
         "security": [
           {
             "AccessToken": []
           }
         ],
-        "description": "Returns tokens ranked 151\u2013200 by market cap with AI scoring and ranking.",
+        "description": "Returns tokens with overall score < 6.0 from the top-200 by market cap, ranked lowest-first.\nOverall score = Round(Average(6 individual metric scores), 1).\nEach item includes: rank, asset info, overall score, 6 category scores, and a Korean summary (max 20 chars).",
         "tags": [
           "Market"
         ],
-        "summary": "AI Recommended Assets (Rank 151\u2013200)",
+        "summary": "Sell Recommendation Ranking",
         "parameters": [
           {
-            "description": "Date in YYYY-MM-DD format",
+            "description": "Date in YYYY-MM-DD format. If omitted, returns the most recent data",
             "name": "date",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "description": "Prompt type (template key)",
-            "name": "type",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "enum": [
-                "score_ranking",
-                "summary",
-                "comprehensive_evaluation",
-                "sentiment_trend"
-              ]
-            }
-          },
-          {
-            "description": "Tickers (comma separated, optional)",
-            "name": "tickers",
             "in": "query",
             "schema": {
               "type": "string"
@@ -2146,17 +2110,27 @@
         ],
         "responses": {
           "200": {
-            "description": "Returns AI recommended assets on success",
+            "description": "Returns sell recommendations on success",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/model.GenericResponse-model_AIRecommendedAssetsResponse"
+                  "$ref": "#/components/schemas/model.GenericResponse-model_RecommendationResponse"
                 }
               }
             }
           },
-          "400": {
-            "description": "When request parameters are invalid",
+          "404": {
+            "description": "When no data found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/model.BaseResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
             "content": {
               "application/json": {
                 "schema": {
@@ -4033,6 +4007,69 @@
           "success": {
             "type": "boolean",
             "example": true
+          }
+        }
+      },
+      "model.GenericResponse-model_RecommendationResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/model.RecommendationResponse"
+          },
+          "error_code": {
+            "type": "string",
+            "example": "FORBIDDEN"
+          },
+          "message": {
+            "type": "string",
+            "example": "success"
+          },
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      },
+      "model.RecommendationItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "image_url": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "rank": {
+            "type": "integer"
+          },
+          "score_by_category": {
+            "$ref": "#/components/schemas/model.AIRecommendedAssetScoreByCategory"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "symbol": {
+            "type": "string"
+          },
+          "total_score": {
+            "type": "number"
+          }
+        }
+      },
+      "model.RecommendationResponse": {
+        "type": "object",
+        "properties": {
+          "assets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/model.RecommendationItem"
+            }
+          },
+          "generated_at": {
+            "type": "string"
           }
         }
       }
