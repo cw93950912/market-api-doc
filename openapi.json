@@ -1451,22 +1451,6 @@
                                 "market_rise_fall_reason"
                             ]
                         }
-                    },
-                    {
-                        "description": "Ticker (required when type is asset_price_surge or asset_price_decline)",
-                        "name": "ticker",
-                        "in": "query",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Sector (required when type is undervalued_asset; used as filter on bithumb_reports)",
-                        "name": "sector",
-                        "in": "query",
-                        "schema": {
-                            "type": "string"
-                        }
                     }
                 ],
                 "responses": {

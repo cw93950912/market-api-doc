@@ -47,10 +47,6 @@ openapi: openapi.json GET /v1/market/ai-recommended-prompts
     Set <code>type</code> (required) as the signal type. Different types produce different structured outputs.
   </Step>
 
-  <Step title="Ticker when needed">
-    When <code>type</code> is <code>asset_price_surge</code> or <code>asset_price_decline</code>, provide <code>ticker</code> (required for that type).
-  </Step>
-
   <Step title="Optional: choose a date">
     Provide <code>date</code> (YYYY-MM-DD) to view historical context. Default is the latest available snapshot.
   </Step>
