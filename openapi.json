@@ -2297,6 +2297,9 @@
                     },
                     "total_score": {
                         "type": "number"
+                    },
+                    "sentiment_label": {
+                        "type": "string"
                     }
                 }
             },

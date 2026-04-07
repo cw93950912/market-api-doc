@@ -35,17 +35,19 @@ openapi: openapi.json GET /v1/market/ai-recommended-assets
 <ul style={{ fontSize: 15, lineHeight: 1.8 }}>
   <li>
     <strong>score_ranking</strong>: asset info + <code>total_score</code>, <code>score_by_category</code>,
-    <code>overall_rank</code>, and <code>ranking_by_category</code>.
+    <code>overall_rank</code>, <code>ranking_by_category</code>, <code>opinion</code>, and <code>interpretation</code>.
   </li>
   <li>
-    <strong>summary</strong>: asset info + <code>summary</code> (concise Korean one-liner, max 20 characters).
+    <strong>summary</strong>: asset info + <code>total_score</code>, <code>score_by_category</code>,
+    and <code>summary</code> (concise Korean one-liner, max 20 characters).
   </li>
   <li>
     <strong>comprehensive_evaluation</strong>: asset info + <code>total_score</code>, <code>score_by_category</code>,
     <code>overall_rank</code>, <code>opinion</code>, and <code>interpretation</code>.
   </li>
   <li>
-    <strong>sentiment_trend</strong>: asset info + <code>bullish</code> and <code>bearish</code> (numeric sentiment distribution).
+    <strong>sentiment_trend</strong>: asset info + <code>bullish</code>, <code>bearish</code> (numeric sentiment distribution),
+    and <code>sentiment_label</code> (Korean label derived from bullish ratio).
   </li>
 </ul>
 
