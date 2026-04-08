@@ -2265,7 +2265,7 @@
                     "bullish": {
                         "type": "number"
                     },
-                    "id": {
+                    "uid": {
                         "type": "string"
                     },
                     "image_url": {
@@ -3706,7 +3706,7 @@
             "model.RecommendationItem": {
                 "type": "object",
                 "properties": {
-                    "id": {
+                    "uid": {
                         "type": "string"
                     },
                     "image_url": {

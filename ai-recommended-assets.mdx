@@ -26,8 +26,8 @@ openapi: openapi.json GET /v1/market/ai-recommended-assets
 </p>
 
 <ul style={{ fontSize: 15, lineHeight: 1.8 }}>
-  <li><code>/v1/market/ai-buy-recommendation</code> — buy recommendation (rank 1–50, highest score first)</li>
-  <li><code>/v1/market/ai-sell-recommendation</code> — sell recommendation (rank 151–200, lowest score first)</li>
+  <li><code>/v1/market/ai-buy-recommendation</code> — buy recommendation (rank 1–50, score &ge; 6.0, highest first)</li>
+  <li><code>/v1/market/ai-sell-recommendation</code> — sell recommendation (rank 151–200, score &lt; 6.0, lowest first)</li>
 </ul>
 
 <h3 style={{ marginTop: 20 }}>Response modes (type)</h3>
