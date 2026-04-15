@@ -2260,10 +2260,10 @@
                 "type": "object",
                 "properties": {
                     "bearish": {
-                        "type": "number"
+                        "type": "integer"
                     },
                     "bullish": {
-                        "type": "number"
+                        "type": "integer"
                     },
                     "uid": {
                         "type": "string"
@@ -2293,6 +2293,9 @@
                         "type": "string"
                     },
                     "symbol": {
+                        "type": "string"
+                    },
+                    "title": {
                         "type": "string"
                     },
                     "total_score": {
@@ -3725,6 +3728,9 @@
                         "type": "string"
                     },
                     "symbol": {
+                        "type": "string"
+                    },
+                    "title": {
                         "type": "string"
                     },
                     "total_score": {
